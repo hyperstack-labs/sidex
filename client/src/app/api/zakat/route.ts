@@ -5,7 +5,6 @@ export const runtime = "nodejs";
 const GOLD_NISAB_GRAMS = 85;
 const SILVER_NISAB_GRAMS = 595;
 const TROY_OUNCE_TO_GRAM = 31.1034768;
-
 const CACHE_SECONDS = 60 * 60;
 
 type GoldApiResponse = {

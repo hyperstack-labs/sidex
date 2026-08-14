@@ -36,6 +36,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Image from "next/image";
+import { WalletConnectButton } from "./ui/wallet-connect-button";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -78,7 +79,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Header */}
       <header
         className={`sticky top-0 z-50 w-full transition-colors ${isScrolled
-          ? "border-b border-border/40 bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/40"
+          ? "border-b border-border/40 bg-background/60 backdrop-blur supports-backdrop-filter:bg-background/40"
           : "border-b border-transparent bg-transparent"
           }`}
       >
@@ -91,7 +92,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 alt="SidEx"
                 width={100}
                 height={32}
-                className="h-5 w-auto h-auto"
+                className="w-auto h-auto"
                 priority
               />
               <p className="hidden sm:block text-[10px] text-muted-foreground leading-tight transition-all duration-300 group-hover:text-white group-hover:[text-shadow:0_0_15px_rgba(255,255,255,0.6)]">Sharia-Compliant Wallet</p>
@@ -107,7 +108,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   key={item.id}
                   variant="ghost"
                   onClick={() => router.push(item.path)}
-                  className={`px-4 py-2 transition-all duration-300 !bg-transparent hover:!bg-transparent active:!bg-transparent focus-visible:!bg-transparent ${isActive
+                  className={`px-4 py-2 transition-all duration-300 bg-transparent! hover:bg-transparent! active:bg-transparent! focus-visible:bg-transparent! ${isActive
                     ? "text-white [text-shadow:0_0_20px_rgba(255,255,255,0.8)]"
                     : "text-muted-foreground hover:text-white hover:[text-shadow:0_0_15px_rgba(255,255,255,0.6)]"
                     }`}
@@ -125,11 +126,18 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <Menu className="w-5 h-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-72">
+            <SheetContent side="right" className="w-[85vw] max-w-72 flex flex-col">
               <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
               <div className="flex flex-col h-full">
                 {/* Mobile Navigation */}
                 <nav className="flex-1 space-y-2 mt-8">
+                  {/* Wallet Connect - Mobile */}
+                  <div className="px-4 pt-4">
+                    <WalletConnectButton fullWidth />
+                  </div>
+
+                  <div className="my-2 border-t border-border" />
+
                   {navigation.map((item) => {
                     const isActive = pathname.startsWith(item.path);
                     return (
@@ -147,9 +155,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                       </Button>
                     );
                   })}
-
                   <div className="my-4 border-t border-border" />
-
                   <Button
                     variant="ghost"
                     onClick={() => {
@@ -161,7 +167,6 @@ export function AppLayout({ children }: AppLayoutProps) {
                     <FileText className="w-5 h-5" />
                     Terms of Service
                   </Button>
-
                   <Button
                     variant="ghost"
                     onClick={() => {
@@ -173,9 +178,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     <Shield className="w-5 h-5" />
                     Privacy Policy
                   </Button>
-
                   <div className="my-4 border-t border-border" />
-
                   <div className="flex items-center gap-3 px-2 py-2">
                     <Avatar className="size-9">
                       <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
@@ -187,7 +190,6 @@ export function AppLayout({ children }: AppLayoutProps) {
                       <p className="text-xs text-muted-foreground">Manage wallet access</p>
                     </div>
                   </div>
-
                   <Button
                     variant="ghost"
                     onClick={() => {
@@ -212,12 +214,14 @@ export function AppLayout({ children }: AppLayoutProps) {
           </Sheet>
 
           {/* Desktop User Menu - Right Side */}
-          <div className="hidden md:flex flex-1 justify-end items-center gap-1">
+          <div className="hidden md:flex flex-1 justify-end items-center gap-3 min-w-0">
+            {/* Wallet Connect Button */}
+            <WalletConnectButton />
             {/* Notification Bell */}
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9 relative !bg-transparent hover:!bg-transparent active:!bg-transparent focus-visible:!bg-transparent text-muted-foreground hover:text-white transition-colors"
+              className="h-9 w-9 relative bg-transparent! hover:bg-transparent! active:bg-transparent! focus-visible:bg-transparent! text-muted-foreground hover:text-white transition-colors"
               onClick={() => setNotificationOpen(true)}
             >
               <Bell className="h-5 w-5" />
@@ -228,7 +232,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             {/* Account Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-9 gap-2 px-2 text-muted-foreground !bg-transparent hover:!bg-transparent active:!bg-transparent focus-visible:!bg-transparent">
+                <Button variant="ghost" className="h-9 gap-2 px-2 text-muted-foreground bg-transparent! hover:bg-transparent! active:bg-transparent! focus-visible:bg-transparent!">
                   <Avatar className="size-8">
                     <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
                       SE
@@ -305,7 +309,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* System Status Notification Dialog */}
       <Dialog open={notificationOpen} onOpenChange={setNotificationOpen}>
-        <DialogContent className="sm:max-w-[600px] bg-zinc-950 border-zinc-800">
+        <DialogContent className="sm:max-w-150 bg-zinc-950 border-zinc-800">
           <DialogHeader>
             <div className="flex items-center gap-2">
               <Shield className="h-5 w-5 text-[#01AACA]" />
@@ -315,7 +319,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               Real-time monitoring and status information for the SidEx platform.
             </DialogDescription>
           </DialogHeader>
-
+                    
           <div className="space-y-4 py-4">
             {/* Main Status Message */}
             <p className="text-sm text-muted-foreground">
@@ -367,7 +371,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 </div>
               </div>
             </div>
-
+            
             {/* Acknowledge Button */}
             <div className="flex justify-end pt-2">
               <Button

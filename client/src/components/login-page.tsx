@@ -258,11 +258,10 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               <Button
                 onClick={handleLogin}
                 disabled={!recoveryPhrase.trim()}
-                className={`w-full h-11 text-sm tracking-wide rounded-xl transition-all duration-200 ${
-                  recoveryPhrase.trim()
+                className={`w-full h-11 text-sm tracking-wide rounded-xl transition-all duration-200 ${recoveryPhrase.trim()
                     ? "bg-[#01AACA] hover:bg-[#01AACA]/90 text-zinc-950 font-semibold shadow-[0_0_25px_rgba(1,170,202,0.35)] hover:shadow-[0_0_35px_rgba(1,170,202,0.5)] active:scale-[0.99] cursor-pointer"
                     : "bg-zinc-900/90 text-zinc-500 border border-white/5 font-medium cursor-not-allowed shadow-none"
-                }`}
+                  }`}
               >
                 <span>Unlock Wallet</span>
               </Button>
@@ -298,7 +297,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           </Card>
         </div>
 
-        {/* Minimalist Typographic Footer - Single Line */}
+        {/* Minimalist Typographic Security Line */}
         <div className="pt-2 text-center">
           <p className="text-[11px] font-mono tracking-wider text-zinc-500 uppercase flex flex-nowrap items-center justify-center gap-2 whitespace-nowrap">
             <span>End-to-End Encrypted</span>
@@ -309,6 +308,13 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           </p>
         </div>
       </motion.div>
+
+      {/* Lower Right Copyright Attribution */}
+      <div className="fixed bottom-5 right-6 z-30 hidden sm:block">
+        <p className="text-[10px] font-mono tracking-wider text-zinc-600">
+          © 2026 SidEx. Built on Sidra Chain.
+        </p>
+      </div>
 
       {/* Modern Glassmorphic 'How it Works' Modal */}
       <Dialog open={isHelpOpen} onOpenChange={setIsHelpOpen}>

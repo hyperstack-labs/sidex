@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Shield, Info, ExternalLink, Scale, Check } from "lucide-react";
+import { Shield, Info, ExternalLink, Scale } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -255,8 +255,8 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                 }}
               />
 
-              {/* Minimalist Bottom Status Line */}
-              {wordsCount > 0 && (
+              {/* Minimalist Bottom Status Line (Error / In-Progress only) */}
+              {wordsCount > 0 && !isPhraseValid && (
                 <div className="flex items-center justify-between text-xs font-mono px-0.5 pt-0.5">
                   {invalidWords.length > 0 ? (
                     <span className="text-red-400">
@@ -264,11 +264,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                     </span>
                   ) : isChecksumError ? (
                     <span className="text-amber-400">Invalid phrase order</span>
-                  ) : isPhraseValid ? (
-                    <span className="text-emerald-400 flex items-center gap-1 font-medium">
-                      <Check className="w-3.5 h-3.5" />
-                      <span>{wordsCount}-word phrase ready</span>
-                    </span>
                   ) : (
                     <span className="text-zinc-500">
                       {wordsCount} / {wordsCount > 12 ? 24 : 12} words

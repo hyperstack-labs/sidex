@@ -54,21 +54,30 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [legalModal, setLegalModal] = useState<"tos" | "privacy" | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [isScrollHovered, setIsScrollHovered] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [thumbHeightRatio, setThumbHeightRatio] = useState(0.2);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
   const handleContainerScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const scrollTop = e.currentTarget.scrollTop;
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
     setIsScrolled(scrollTop > 8);
     setIsScrolling(true);
+
+    const maxScroll = scrollHeight - clientHeight;
+    if (maxScroll > 0) {
+      setScrollProgress(scrollTop / maxScroll);
+      setThumbHeightRatio(Math.max(0.12, Math.min(0.8, clientHeight / scrollHeight)));
+    }
 
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
     scrollTimeoutRef.current = setTimeout(() => {
       setIsScrolling(false);
-    }, 850);
+    }, 900);
   };
 
   useEffect(() => {
@@ -323,9 +332,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Scrollable Body Container - Isolated Below Navbar */}
       <div
-        className={`flex-1 overflow-y-auto overflow-x-hidden flex flex-col justify-between custom-scrollbar ${
-          isScrolling ? "is-scrolling" : ""
-        }`}
+        className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col justify-between no-scrollbar relative"
         onScroll={handleContainerScroll}
       >
         {/* Main Content - Widened Canvas Viewport */}
@@ -386,6 +393,30 @@ export function AppLayout({ children }: AppLayoutProps) {
             </div>
           </div>
         </footer>
+      </div>
+
+      {/* Luxury Floating Precision Scrollbar with Edge Hover Zone */}
+      <div
+        className="fixed right-0 top-20 bottom-0 w-3 z-50 flex justify-end pr-1 cursor-pointer"
+        onMouseEnter={() => setIsScrollHovered(true)}
+        onMouseLeave={() => setIsScrollHovered(false)}
+      >
+        <motion.div
+          className="w-1 bg-white/40 hover:bg-white/60 rounded-full transition-colors"
+          style={{
+            height: `${thumbHeightRatio * 100}%`,
+            transform: `translateY(${
+              scrollProgress * ((1 - thumbHeightRatio) / Math.max(thumbHeightRatio, 0.05)) * 100
+            }%)`,
+          }}
+          animate={{ opacity: isScrolling || isScrollHovered ? 1 : 0 }}
+          transition={{
+            opacity: {
+              duration: isScrolling || isScrollHovered ? 0.1 : 0.55,
+              ease: "easeOut",
+            },
+          }}
+        />
       </div>
 
       <FloatingAIAssistant />

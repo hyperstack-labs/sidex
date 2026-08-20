@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState, useRef } from "react";
 import { motion } from "motion/react";
 import {
   LayoutDashboard,
@@ -53,14 +53,30 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [legalModal, setLegalModal] = useState<"tos" | "privacy" | null>(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pathname = usePathname();
   const router = useRouter();
 
+  const handleContainerScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const scrollTop = e.currentTarget.scrollTop;
+    setIsScrolled(scrollTop > 8);
+    setIsScrolling(true);
+
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsScrolling(false);
+    }, 850);
+  };
+
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
   }, []);
 
   const handleLogout = () => {
@@ -75,10 +91,10 @@ export function AppLayout({ children }: AppLayoutProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background relative flex flex-col justify-between">
-      {/* Header */}
+    <div className="h-screen overflow-hidden bg-background relative flex flex-col">
+      {/* Header - Fixed Outside Scroll Container */}
       <header
-        className={`sticky top-0 z-50 w-full transition-colors ${isScrolled
+        className={`shrink-0 z-50 w-full transition-colors ${isScrolled
           ? "border-b border-border/40 bg-background/60 backdrop-blur supports-backdrop-filter:bg-background/40"
           : "border-b border-transparent bg-transparent"
           }`}
@@ -305,64 +321,72 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
       </header>
 
-      {/* Main Content - Widened Canvas Viewport */}
-      <main className="w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-16 py-6 flex-1 flex flex-col">
-        <motion.div
-          key={pathname}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="flex-1 flex flex-col w-full"
-        >
-          {children}
-        </motion.div>
-      </main>
+      {/* Scrollable Body Container - Isolated Below Navbar */}
+      <div
+        className={`flex-1 overflow-y-auto overflow-x-hidden flex flex-col justify-between custom-scrollbar ${
+          isScrolling ? "is-scrolling" : ""
+        }`}
+        onScroll={handleContainerScroll}
+      >
+        {/* Main Content - Widened Canvas Viewport */}
+        <main className="w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-16 py-6 flex-1 flex flex-col">
+          <motion.div
+            key={pathname}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="flex-1 flex flex-col w-full"
+          >
+            {children}
+          </motion.div>
+        </main>
 
-      {/* Sleek Minimalist Footer - Pinned to Viewport Bottom */}
-      <footer className="border-t border-white/5 py-6 mt-auto bg-black/40 backdrop-blur-md w-full">
-        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-16">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-zinc-500">
-            {/* Left: Brand & Network */}
-            <div className="flex items-center gap-2.5">
-              <span className="text-zinc-400 font-medium">© 2026 SidEx Protocol</span>
-              <span>•</span>
-              <span>Built on Sidra Chain</span>
-            </div>
+        {/* Sleek Minimalist Footer - Pinned to Viewport Bottom */}
+        <footer className="border-t border-white/5 py-6 mt-auto bg-black/40 backdrop-blur-md w-full">
+          <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-16">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-zinc-500">
+              {/* Left: Brand & Network */}
+              <div className="flex items-center gap-2.5">
+                <span className="text-zinc-400 font-medium">© 2026 SidEx Protocol</span>
+                <span>•</span>
+                <span>Built on Sidra Chain</span>
+              </div>
 
-            {/* Center: AAOIFI Sharia Badge - Pure Typography, No Circular Dot */}
-            <div className="hidden lg:flex items-center text-[11px] text-zinc-400">
-              <span>AAOIFI Standard No. 21 / 59 Compliant</span>
-            </div>
+              {/* Center: AAOIFI Sharia Badge - Pure Typography, No Circular Dot */}
+              <div className="hidden lg:flex items-center text-[11px] text-zinc-400">
+                <span>AAOIFI Standard No. 21 / 59 Compliant</span>
+              </div>
 
-            {/* Right: Legal & Explorer Links */}
-            <div className="flex items-center gap-5">
-              <button
-                type="button"
-                onClick={() => onOpenLegal("tos")}
-                className="hover:text-zinc-200 transition-colors cursor-pointer"
-              >
-                Terms of Service
-              </button>
-              <button
-                type="button"
-                onClick={() => onOpenLegal("privacy")}
-                className="hover:text-zinc-200 transition-colors cursor-pointer"
-              >
-                Privacy Policy
-              </button>
-              <a
-                href="https://ledger.sidrachain.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-zinc-200 transition-colors flex items-center gap-1"
-              >
-                <span>Explorer</span>
-                <span className="text-[10px]">↗</span>
-              </a>
+              {/* Right: Legal & Explorer Links */}
+              <div className="flex items-center gap-5">
+                <button
+                  type="button"
+                  onClick={() => onOpenLegal("tos")}
+                  className="hover:text-zinc-200 transition-colors cursor-pointer"
+                >
+                  Terms of Service
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onOpenLegal("privacy")}
+                  className="hover:text-zinc-200 transition-colors cursor-pointer"
+                >
+                  Privacy Policy
+                </button>
+                <a
+                  href="https://ledger.sidrachain.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-zinc-200 transition-colors flex items-center gap-1"
+                >
+                  <span>Explorer</span>
+                  <span className="text-[10px]">↗</span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
 
       <FloatingAIAssistant />
       <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />

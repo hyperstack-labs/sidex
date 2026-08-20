@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  ArrowLeftRight,
+  ArrowUpDown,
   CheckCircle,
   Loader2,
   ChevronDown,
@@ -11,6 +11,12 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
 interface SwapTransactionProps {
@@ -50,12 +56,9 @@ const availableTokens: TokenData[] = [
 ];
 
 /**
- * Centered Left-and-Right Horizontal Swap Interface for SidEx.
- * - Left: YOU PAY (Large Scale)
- * - Center: Pure White Switch Icon (Zero Container Box)
- * - Right: YOU RECEIVE (Large Scale)
- * - Zero redundant horizontal lines
- * - Zero box-in-a-box nesting
+ * Ultra-Clean Production Web3 Swap for SidEx.
+ * Natural vertical eye flow, large bold numbers, zero redundant micro-text,
+ * zero box-in-a-box nesting, and zero circular dots.
  */
 export function SwapTransaction({ onBack }: SwapTransactionProps) {
   const [fromToken, setFromToken] = useState<TokenData>(availableTokens[0]);
@@ -115,7 +118,7 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
   // Complete Screen
   if (isComplete) {
     return (
-      <div className="w-full max-w-lg mx-auto my-auto py-16 space-y-6 text-center">
+      <div className="w-full max-w-md mx-auto my-auto py-16 space-y-6 text-center">
         <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto text-emerald-400">
           <CheckCircle className="w-7 h-7" />
         </div>
@@ -181,7 +184,7 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
   // Confirmation Review Screen
   if (isConfirming) {
     return (
-      <div className="w-full max-w-lg mx-auto my-auto py-12 space-y-6">
+      <div className="w-full max-w-md mx-auto my-auto py-12 space-y-6">
         <div className="flex items-center justify-between pb-3">
           <button
             type="button"
@@ -244,173 +247,187 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
     );
   }
 
-  // Centered Left-and-Right Pure Swap (Balanced Proportions & Healthy Spacing)
+  // Pure Centered Vertical Swap Module (Natural Flow, Zero Clutter)
   return (
-    <div className="w-full max-w-4xl mx-auto my-auto flex-1 flex flex-col justify-center py-12 space-y-12">
-      {/* ─── Balanced Left-to-Right Flow with Sapat na Space ─── */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 md:gap-10 items-center justify-between">
-        {/* LEFT COLUMN: YOU PAY */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
-            <span className="font-semibold text-white uppercase tracking-wider text-xs">You Pay</span>
-            <div className="flex items-center gap-3">
-              <span className="text-zinc-500">
-                Avail: <span className="text-zinc-300">{fromToken.balance}</span>
-              </span>
-              <div className="flex items-center gap-2 text-[11px] text-zinc-400">
-                {[0.25, 0.5, 0.75, 1].map((pct) => (
-                  <button
-                    key={pct}
-                    type="button"
-                    onClick={() => handlePercentClick(pct)}
-                    className="hover:text-white underline underline-offset-2 decoration-zinc-700 hover:decoration-white transition-colors cursor-pointer"
-                  >
-                    {pct === 1 ? "MAX" : `${pct * 100}%`}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Large Number Input */}
-          <div className="flex items-center justify-between gap-4">
-            <input
-              type="text"
-              inputMode="decimal"
-              placeholder="0.00"
-              value={fromAmount}
-              onChange={(e) => handleFromAmountChange(e.target.value)}
-              className="w-full bg-transparent text-5xl sm:text-6xl md:text-7xl font-bold font-mono text-white outline-none focus:outline-none placeholder:text-zinc-700 leading-none tracking-tight"
-            />
-
+    <div className="w-full max-w-md mx-auto my-auto flex-1 flex flex-col justify-center py-10 space-y-6">
+      {/* 1. YOU PAY SECTION */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
+          <span className="font-semibold text-white uppercase tracking-wider text-xs">You Pay</span>
+          <div className="flex items-center gap-2">
+            <span className="text-zinc-500">Avail:</span>
             <button
               type="button"
-              onClick={() => setIsTokenSelectorOpen(isTokenSelectorOpen === "from" ? null : "from")}
-              className="flex items-center gap-2.5 px-3.5 py-2 rounded-full border border-white/15 hover:border-white/30 bg-zinc-900/80 text-white font-semibold text-sm sm:text-base shrink-0 cursor-pointer transition-colors shadow-lg"
+              onClick={() => handlePercentClick(1)}
+              className="text-zinc-300 hover:text-white underline underline-offset-2 transition-colors cursor-pointer"
+              title="Use Maximum Balance"
             >
-              <Image
-                src={fromToken.image}
-                alt={fromToken.symbol}
-                width={24}
-                height={24}
-                className="w-6 h-6 object-contain"
-              />
-              <span>{fromToken.symbol}</span>
-              <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+              {fromToken.balance}
             </button>
           </div>
-
-          <p className="text-xs font-mono text-zinc-400">≈ ${fromUsd} USD</p>
         </div>
 
-        {/* CENTER: PURE WHITE SWITCH ICON (ZERO CONTAINER BOX) */}
-        <div className="flex flex-col items-center justify-center py-2 md:py-0">
-          <button
-            type="button"
-            onClick={handleFlipTokens}
-            className="text-white hover:text-zinc-300 transition-transform duration-300 hover:rotate-180 cursor-pointer p-2.5 bg-transparent border-0 shadow-none outline-none"
-            title="Switch Tokens"
-          >
-            <ArrowLeftRight className="w-7 h-7 text-white" />
-          </button>
-          <span className="text-[11px] font-mono text-zinc-500 pt-1.5 text-center whitespace-nowrap hidden md:block">
-            1 {fromToken.symbol} ≈ {exchangeRate} {toToken.symbol}
+        {/* Big Number Input */}
+        <div className="flex items-center justify-between gap-4">
+          <input
+            type="text"
+            inputMode="decimal"
+            placeholder="0.00"
+            value={fromAmount}
+            onChange={(e) => handleFromAmountChange(e.target.value)}
+            className="w-full bg-transparent text-5xl sm:text-6xl font-bold font-mono text-white outline-none focus:outline-none placeholder:text-zinc-700 leading-none tracking-tight"
+          />
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                type="button"
+                className="flex items-center gap-2.5 px-3.5 py-2 rounded-full border border-white/10 hover:border-white/25 bg-zinc-900/60 text-white font-semibold text-sm shrink-0 cursor-pointer transition-colors shadow-sm outline-none"
+              >
+                <Image
+                  src={fromToken.image}
+                  alt={fromToken.symbol}
+                  width={22}
+                  height={22}
+                  className="w-5.5 h-5.5 object-contain"
+                />
+                <span>{fromToken.symbol}</span>
+                <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-1.5 z-50 divide-y divide-white/5">
+              {availableTokens.map((t) => (
+                <DropdownMenuItem
+                  key={t.symbol}
+                  onClick={() => {
+                    if (t.symbol === toToken.symbol) handleFlipTokens();
+                    else setFromToken(t);
+                  }}
+                  className="flex items-center justify-between p-2.5 rounded-xl cursor-pointer hover:bg-white/5 focus:bg-white/5 outline-none"
+                >
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src={t.image}
+                      alt={t.symbol}
+                      width={24}
+                      height={24}
+                      className="w-6 h-6 object-contain"
+                    />
+                    <div>
+                      <div className="font-semibold text-white text-xs">{t.name}</div>
+                      <div className="text-[10px] text-zinc-500 font-mono">{t.symbol} • ${t.price}</div>
+                    </div>
+                  </div>
+                  <span className="text-xs font-mono text-zinc-400">{t.balance}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        <p className="text-xs font-mono text-zinc-500">≈ ${fromUsd} USD</p>
+      </div>
+
+      {/* 2. PURE WHITE SWITCH ICON (CENTERED, ZERO CONTAINER BOX) */}
+      <div className="flex items-center justify-center py-1">
+        <button
+          type="button"
+          onClick={handleFlipTokens}
+          className="text-white hover:text-zinc-300 transition-transform duration-300 hover:rotate-180 cursor-pointer p-2 bg-transparent border-0 shadow-none outline-none"
+          title="Switch Tokens"
+        >
+          <ArrowUpDown className="w-5 h-5 text-white" />
+        </button>
+      </div>
+
+      {/* 3. YOU RECEIVE SECTION */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
+          <span className="font-semibold text-white uppercase tracking-wider text-xs">You Receive</span>
+          <span className="text-zinc-500">
+            Balance: <span className="text-zinc-300">{toToken.balance}</span>
           </span>
         </div>
 
-        {/* RIGHT COLUMN: YOU RECEIVE */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
-            <span className="font-semibold text-white uppercase tracking-wider text-xs">You Receive</span>
-            <span className="text-zinc-500">
-              Balance: <span className="text-zinc-300">{toToken.balance}</span>
-            </span>
-          </div>
+        {/* Big Number Output */}
+        <div className="flex items-center justify-between gap-4">
+          <input
+            type="text"
+            readOnly
+            placeholder="0.00"
+            value={toAmount}
+            className="w-full bg-transparent text-5xl sm:text-6xl font-bold font-mono text-emerald-400 outline-none focus:outline-none placeholder:text-zinc-700 leading-none tracking-tight cursor-default"
+          />
 
-          {/* Large Number Output */}
-          <div className="flex items-center justify-between gap-4">
-            <input
-              type="text"
-              readOnly
-              placeholder="0.00"
-              value={toAmount}
-              className="w-full bg-transparent text-5xl sm:text-6xl md:text-7xl font-bold font-mono text-emerald-400 outline-none focus:outline-none placeholder:text-zinc-700 leading-none tracking-tight cursor-default"
-            />
-
-            <button
-              type="button"
-              onClick={() => setIsTokenSelectorOpen(isTokenSelectorOpen === "to" ? null : "to")}
-              className="flex items-center gap-2.5 px-3.5 py-2 rounded-full border border-white/15 hover:border-white/30 bg-zinc-900/80 text-white font-semibold text-sm sm:text-base shrink-0 cursor-pointer transition-colors shadow-lg"
-            >
-              <Image
-                src={toToken.image}
-                alt={toToken.symbol}
-                width={24}
-                height={24}
-                className="w-6 h-6 object-contain"
-              />
-              <span>{toToken.symbol}</span>
-              <ChevronDown className="w-3.5 h-3.5 opacity-60" />
-            </button>
-          </div>
-
-          <p className="text-xs font-mono text-zinc-400">≈ ${toUsd} USD</p>
-        </div>
-      </div>
-
-      {/* Token Selector Dropdown List */}
-      <AnimatePresence>
-        {isTokenSelectorOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="max-w-md mx-auto divide-y divide-white/5 border border-white/10 rounded-2xl bg-zinc-950 p-2 overflow-hidden shadow-2xl"
-          >
-            {availableTokens.map((t) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
               <button
-                key={t.symbol}
                 type="button"
-                onClick={() => {
-                  if (isTokenSelectorOpen === "from") {
-                    if (t.symbol === toToken.symbol) handleFlipTokens();
-                    else setFromToken(t);
-                  } else {
+                className="flex items-center gap-2.5 px-3.5 py-2 rounded-full border border-white/10 hover:border-white/25 bg-zinc-900/60 text-white font-semibold text-sm shrink-0 cursor-pointer transition-colors shadow-sm outline-none"
+              >
+                <Image
+                  src={toToken.image}
+                  alt={toToken.symbol}
+                  width={22}
+                  height={22}
+                  className="w-5.5 h-5.5 object-contain"
+                />
+                <span>{toToken.symbol}</span>
+                <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-1.5 z-50 divide-y divide-white/5">
+              {availableTokens.map((t) => (
+                <DropdownMenuItem
+                  key={t.symbol}
+                  onClick={() => {
                     if (t.symbol === fromToken.symbol) handleFlipTokens();
                     else setToToken(t);
-                  }
-                  setIsTokenSelectorOpen(null);
-                }}
-                className="w-full flex items-center justify-between p-3.5 hover:bg-white/5 rounded-xl transition-colors cursor-pointer text-left"
-              >
-                <div className="flex items-center gap-3.5">
-                  <Image
-                    src={t.image}
-                    alt={t.symbol}
-                    width={32}
-                    height={32}
-                    className="w-8 h-8 object-contain"
-                  />
-                  <div>
-                    <div className="font-semibold text-white text-base">{t.name}</div>
-                    <div className="text-xs text-zinc-500 font-mono">{t.symbol} • ${t.price}</div>
+                  }}
+                  className="flex items-center justify-between p-2.5 rounded-xl cursor-pointer hover:bg-white/5 focus:bg-white/5 outline-none"
+                >
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src={t.image}
+                      alt={t.symbol}
+                      width={24}
+                      height={24}
+                      className="w-6 h-6 object-contain"
+                    />
+                    <div>
+                      <div className="font-semibold text-white text-xs">{t.name}</div>
+                      <div className="text-[10px] text-zinc-500 font-mono">{t.symbol} • ${t.price}</div>
+                    </div>
                   </div>
-                </div>
-                <span className="text-sm font-mono text-zinc-400">{t.balance}</span>
-              </button>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+                  <span className="text-xs font-mono text-zinc-400">{t.balance}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
 
-      {/* ─── Centered Bottom CTA ─── */}
-      <div className="max-w-lg mx-auto w-full pt-4 space-y-3">
+        <p className="text-xs font-mono text-zinc-500">≈ ${toUsd} USD</p>
+      </div>
+
+      {/* Dynamic Rate Line (Appears ONLY when user enters an amount) */}
+      {fromAmount && parseFloat(fromAmount) > 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center text-xs font-mono text-zinc-400 pt-1"
+        >
+          <span>1 {fromToken.symbol} ≈ {exchangeRate} {toToken.symbol}</span>
+        </motion.div>
+      )}
+
+      {/* 4. PRIMARY CTA BUTTON */}
+      <div className="pt-2">
         <Button
           onClick={() => setIsConfirming(true)}
           disabled={!fromAmount || parseFloat(fromAmount) <= 0}
-          className={`w-full h-16 rounded-2xl font-bold text-lg tracking-wide transition-all duration-200 ${
+          className={`w-full h-14 rounded-2xl font-bold text-base tracking-wide transition-all duration-200 ${
             fromAmount && parseFloat(fromAmount) > 0
-              ? "bg-[#01AACA] hover:bg-[#01AACA]/90 text-zinc-950 shadow-[0_0_35px_rgba(1,170,202,0.4)] active:scale-[0.99] cursor-pointer"
+              ? "bg-[#01AACA] hover:bg-[#01AACA]/90 text-zinc-950 shadow-[0_0_30px_rgba(1,170,202,0.35)] active:scale-[0.99] cursor-pointer"
               : "bg-zinc-900 text-zinc-500 border border-white/5 cursor-not-allowed shadow-none"
           }`}
         >
@@ -420,11 +437,6 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
               : `Swap ${fromToken.symbol} for ${toToken.symbol}`}
           </span>
         </Button>
-
-        <div className="flex items-center justify-between text-xs font-mono text-zinc-500 px-1">
-          <span>Gas &lt; 0.001 SDA</span>
-          <span>Instant Settlement</span>
-        </div>
       </div>
     </div>
   );

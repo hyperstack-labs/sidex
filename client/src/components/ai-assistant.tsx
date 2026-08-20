@@ -23,9 +23,7 @@ export function AIAssistant() {
     <div className="w-full max-w-4xl mx-auto flex flex-col min-h-[calc(100vh-14rem)] space-y-8 pb-12">
       {/* 1. Unboxed Minimal Header */}
       <section className="space-y-1.5 pt-2">
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">
-          SidEx AI
-        </h1>
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-white">SidEx AI</h1>
         <p className="text-sm text-zinc-400">
           Sharia financial advisory, real-time Zakat calculations, and on-chain verification.
         </p>

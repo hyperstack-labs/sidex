@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dialog";
 
 import { generateMnemonic, english, mnemonicToAccount } from "viem/accounts";
+import { Check, AlertCircle } from "lucide-react";
 
 interface LoginPageProps {
   onLogin: () => void;
@@ -26,7 +27,7 @@ interface LoginPageProps {
 /**
  * Modern Institutional Web3 Vault & Authentication screen for SidEx.
  * Features a seamless glassmorphism container that blends into the bottom background,
- * top navigation bar, stationary brain emblem, and minimalist typography.
+ * top navigation bar, stationary brain emblem, and real-time BIP-39 seed phrase validation.
  *
  * @param props - Component props containing login trigger.
  * @returns Login page interactive view.
@@ -36,10 +37,28 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isShariaOpen, setIsShariaOpen] = useState(false);
 
-  const wordsCount = recoveryPhrase
+  const words = recoveryPhrase
     .trim()
     .split(/\s+/)
-    .filter((word) => word.length > 0).length;
+    .filter((word) => word.length > 0);
+
+  const wordsCount = words.length;
+  const invalidWords = words.filter(
+    (w) => !(english as readonly string[]).includes(w.toLowerCase())
+  );
+  const isCountMatch = wordsCount === 12 || wordsCount === 24;
+
+  let isPhraseValid = false;
+  if (isCountMatch && invalidWords.length === 0) {
+    try {
+      mnemonicToAccount(recoveryPhrase.trim());
+      isPhraseValid = true;
+    } catch {
+      isPhraseValid = false;
+    }
+  }
+
+  const isChecksumError = isCountMatch && invalidWords.length === 0 && !isPhraseValid;
 
   const handleLogin = () => {
     if (recoveryPhrase.trim()) {
@@ -229,33 +248,32 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             </div>
 
             {/* Secret Recovery Phrase Input */}
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium tracking-tight text-zinc-100">
                   Secret Recovery Phrase
                 </label>
-                <div className="flex items-center gap-2">
-                  {wordsCount > 0 && (
-                    <span className="text-xs font-mono text-zinc-400 border border-white/10 px-2 py-0.5 rounded-full">
-                      {wordsCount} {wordsCount === 1 ? "word" : "words"}
-                    </span>
-                  )}
-                  <button
-                    type="button"
-                    onClick={handlePaste}
-                    className="flex items-center gap-1.5 text-xs text-[#01AACA] hover:text-[#01AACA]/80 transition-colors font-medium"
-                  >
-                    <Clipboard className="w-3.5 h-3.5" />
-                    <span>Paste</span>
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={handlePaste}
+                  className="flex items-center gap-1.5 text-xs text-[#01AACA] hover:text-[#01AACA]/80 transition-colors font-medium cursor-pointer"
+                >
+                  <Clipboard className="w-3.5 h-3.5" />
+                  <span>Paste</span>
+                </button>
               </div>
 
               <Textarea
                 placeholder="Enter 12 or 24-word seed phrase..."
                 value={recoveryPhrase}
                 onChange={(e) => setRecoveryPhrase(e.target.value)}
-                className="min-h-[110px] bg-black/60 border border-white/10 text-sm resize-none font-mono leading-relaxed p-4 rounded-xl text-zinc-200 placeholder:text-zinc-600 focus-visible:ring-0 focus-visible:outline-none focus:outline-none focus:border-[#01AACA]/70 focus:shadow-[0_0_20px_rgba(1,170,202,0.2)] transition-all"
+                className={`min-h-[110px] bg-black/60 text-sm resize-none font-mono leading-relaxed p-4 rounded-xl text-zinc-200 placeholder:text-zinc-600 focus-visible:ring-0 focus-visible:outline-none focus:outline-none transition-all ${
+                  invalidWords.length > 0
+                    ? "border-red-500/40 focus:border-red-500/70"
+                    : isPhraseValid
+                      ? "border-emerald-500/40 focus:border-emerald-500/70"
+                      : "border-white/10 focus:border-[#01AACA]/70"
+                }`}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey) {
                     e.preventDefault();
@@ -263,15 +281,38 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                   }
                 }}
               />
+
+              {/* Minimalist Bottom Status Line */}
+              {wordsCount > 0 && (
+                <div className="flex items-center justify-between text-xs font-mono px-0.5 pt-0.5">
+                  {invalidWords.length > 0 ? (
+                    <span className="text-red-400">
+                      Unknown word: &ldquo;{invalidWords[0]}&rdquo;
+                    </span>
+                  ) : isChecksumError ? (
+                    <span className="text-amber-400">Invalid phrase sequence</span>
+                  ) : isPhraseValid ? (
+                    <span className="text-emerald-400 flex items-center gap-1 font-medium">
+                      <Check className="w-3.5 h-3.5" />
+                      <span>{wordsCount}-word phrase ready</span>
+                    </span>
+                  ) : (
+                    <span className="text-zinc-500">
+                      {wordsCount} / {wordsCount > 12 ? 24 : 12} words
+                    </span>
+                  )}
+                  <span className="text-zinc-600 text-[11px]">BIP-39</span>
+                </div>
+              )}
             </div>
 
             {/* Decrypt Vault Action */}
             <div className="space-y-3 pt-1">
               <Button
                 onClick={handleLogin}
-                disabled={!recoveryPhrase.trim()}
+                disabled={!recoveryPhrase.trim() || invalidWords.length > 0}
                 className={`w-full h-11 text-sm tracking-wide rounded-xl transition-all duration-200 ${
-                  recoveryPhrase.trim()
+                  recoveryPhrase.trim() && invalidWords.length === 0
                     ? "bg-[#01AACA] hover:bg-[#01AACA]/90 text-zinc-950 font-semibold shadow-[0_0_25px_rgba(1,170,202,0.35)] hover:shadow-[0_0_35px_rgba(1,170,202,0.5)] active:scale-[0.99] cursor-pointer"
                     : "bg-zinc-900/90 text-zinc-500 border border-white/5 font-medium cursor-not-allowed shadow-none"
                 }`}

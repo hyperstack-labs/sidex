@@ -159,7 +159,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                 }}
                 className="mb-6 flex items-center gap-3 md:gap-4"
               >
-                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-b from-white to-white/80 bg-clip-text text-transparent">
+                <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold bg-linear-to-b from-white to-white/80 bg-clip-text text-transparent">
                   {showValue ? "$150,000.00" : "••••••••"}
                 </h1>
                 <motion.button
@@ -196,7 +196,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           </div>
 
           {/* Chart Section */}
-          <div className="relative rounded-2xl border border-zinc-800/50 bg-gradient-to-br from-zinc-900/50 to-zinc-950/50 backdrop-blur-sm p-6 overflow-hidden">
+          <div className="relative rounded-2xl border border-zinc-800/50 bg-linear-to-br from-zinc-900/50 to-zinc-950/50 backdrop-blur-sm p-6 overflow-hidden">
             {/* Subtle grid pattern overlay */}
             <div className="absolute inset-0 opacity-[0.02]" style={{
               backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',

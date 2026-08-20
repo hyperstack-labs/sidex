@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Send, CornerDownLeft } from "lucide-react";
+import { CornerDownLeft } from "lucide-react";
 import { quickActions, useAIAssistant } from "@/components/ai/use-ai-assistant";
 
 /**

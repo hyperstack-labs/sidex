@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Shield, Info, Clipboard, ExternalLink, Scale } from "lucide-react";
+import { Shield, Info, ExternalLink, Scale, Check } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/dialog";
 
 import { generateMnemonic, english, mnemonicToAccount } from "viem/accounts";
-import { Check, AlertCircle } from "lucide-react";
 
 interface LoginPageProps {
   onLogin: () => void;
@@ -92,18 +91,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       setTimeout(() => {
         onLogin();
       }, 300);
-    }
-  };
-
-  const handlePaste = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      if (text) {
-        setRecoveryPhrase(text.trim());
-        toast.success("Recovery phrase pasted from clipboard");
-      }
-    } catch {
-      toast.error("Clipboard access denied. Please paste manually.");
     }
   };
 
@@ -249,20 +236,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
             {/* Secret Recovery Phrase Input */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-medium tracking-tight text-zinc-100">
-                  Secret Recovery Phrase
-                </label>
-                <button
-                  type="button"
-                  onClick={handlePaste}
-                  className="flex items-center gap-1.5 text-xs text-[#01AACA] hover:text-[#01AACA]/80 transition-colors font-medium cursor-pointer"
-                >
-                  <Clipboard className="w-3.5 h-3.5" />
-                  <span>Paste</span>
-                </button>
-              </div>
-
               <Textarea
                 placeholder="Enter 12 or 24-word seed phrase..."
                 value={recoveryPhrase}
@@ -287,10 +260,10 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                 <div className="flex items-center justify-between text-xs font-mono px-0.5 pt-0.5">
                   {invalidWords.length > 0 ? (
                     <span className="text-red-400">
-                      Unknown word: &ldquo;{invalidWords[0]}&rdquo;
+                      Unrecognized word: &ldquo;{invalidWords[0]}&rdquo;
                     </span>
                   ) : isChecksumError ? (
-                    <span className="text-amber-400">Invalid phrase sequence</span>
+                    <span className="text-amber-400">Invalid phrase order</span>
                   ) : isPhraseValid ? (
                     <span className="text-emerald-400 flex items-center gap-1 font-medium">
                       <Check className="w-3.5 h-3.5" />
@@ -301,7 +274,6 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                       {wordsCount} / {wordsCount > 12 ? 24 : 12} words
                     </span>
                   )}
-                  <span className="text-zinc-600 text-[11px]">BIP-39</span>
                 </div>
               )}
             </div>

@@ -60,13 +60,11 @@ export function LoginPage({ onLogin }: LoginPageProps) {
   const isChecksumError = isCountMatch && invalidWords.length === 0 && !isPhraseValid;
 
   const handleLogin = () => {
-    if (recoveryPhrase.trim()) {
-      try {
-        const account = mnemonicToAccount(recoveryPhrase.trim());
-        localStorage.setItem("sidex_vault_address", account.address);
-      } catch {
-        localStorage.setItem("sidex_vault_address", "0x892a4B71bA7F512410a82b9A49E4fA51904Eb102");
-      }
+    if (!isPhraseValid) return;
+
+    try {
+      const account = mnemonicToAccount(recoveryPhrase.trim());
+      localStorage.setItem("sidex_vault_address", account.address);
 
       toast.success("Authentication Successful", {
         description: "Vault unlocked and derived on Sidra Chain.",
@@ -74,6 +72,10 @@ export function LoginPage({ onLogin }: LoginPageProps) {
       setTimeout(() => {
         onLogin();
       }, 400);
+    } catch {
+      toast.error("Invalid Recovery Phrase", {
+        description: "Please check your 12 or 24-word phrase and try again.",
+      });
     }
   };
 
@@ -277,9 +279,9 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             <div className="space-y-3 pt-1">
               <Button
                 onClick={handleLogin}
-                disabled={!recoveryPhrase.trim() || invalidWords.length > 0}
+                disabled={!isPhraseValid}
                 className={`w-full h-11 text-sm tracking-wide rounded-xl transition-all duration-200 ${
-                  recoveryPhrase.trim() && invalidWords.length === 0
+                  isPhraseValid
                     ? "bg-[#01AACA] hover:bg-[#01AACA]/90 text-zinc-950 font-semibold shadow-[0_0_25px_rgba(1,170,202,0.35)] hover:shadow-[0_0_35px_rgba(1,170,202,0.5)] active:scale-[0.99] cursor-pointer"
                     : "bg-zinc-900/90 text-zinc-500 border border-white/5 font-medium cursor-not-allowed shadow-none"
                 }`}

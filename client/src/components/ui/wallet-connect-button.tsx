@@ -1,6 +1,14 @@
 "use client";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
+/**
+ * Custom RainbowKit Wallet Connect button with SidEx branded styling (#01AACA),
+ * network status handling, and responsive fullWidth support.
+ *
+ * @param props - Component props
+ * @param props.fullWidth - If true, expands button width to 100% (useful in mobile drawers).
+ * @returns Connect button interactive element.
+ */
 export function WalletConnectButton({
   fullWidth = false,
 }: {

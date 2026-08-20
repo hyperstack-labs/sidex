@@ -5,7 +5,10 @@ import {
 } from "@rainbow-me/rainbowkit/wallets";
 import { type Chain } from "viem";
 
-// Sidrachain definition
+/**
+ * SidraChain network definition for Viem / Wagmi.
+ * Chain ID: 97453, Native Currency: $SDA (18 decimals).
+ */
 export const sidraChain: Chain = {
   id: 97453,
   name: "SidraChain",
@@ -19,13 +22,18 @@ export const sidraChain: Chain = {
   },
   blockExplorers: {
     default: { name: "Sidra Explorer", url: "https://explorer.sidrachain.com" },
+    blockscout: { name: "Blockscout", url: "https://ledger.sidrachain.com" },
   },
 };
 
+/**
+ * Global Wagmi & RainbowKit client configuration.
+ * Configured with SidraChain, injected/MetaMask wallets, and Next.js SSR hydration support.
+ */
 export const config = getDefaultConfig({
   appName: "Sidex",
   projectId:
-    process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "dev-placeholder", 
+    process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "dev-placeholder",
   chains: [sidraChain],
   wallets: [
     {
@@ -35,3 +43,4 @@ export const config = getDefaultConfig({
   ],
   ssr: true,
 });
+

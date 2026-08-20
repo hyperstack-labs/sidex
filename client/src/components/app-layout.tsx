@@ -64,9 +64,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   }, []);
 
   const handleLogout = () => {
-    // Implement logout logic here
-    console.log("Logging out...");
-    router.push("/login"); // Redirect to login
+    router.push("/login");
   };
 
   const onOpenLegal = (type: "tos" | "privacy") => {

@@ -135,6 +135,56 @@ interface DashboardProps {
 }
 
 /**
+ * Single Slot-Machine Digit Reel with vertical spring physics.
+ */
+function DigitReel({ char }: { char: string }) {
+  const num = parseInt(char, 10);
+  if (isNaN(num)) {
+    return <span className="inline-block">{char}</span>;
+  }
+
+  return (
+    <span className="inline-block relative overflow-hidden h-[1.15em] leading-none align-baseline">
+      <motion.span
+        className="flex flex-col text-center"
+        initial={false}
+        animate={{ y: `-${num * 10}%` }}
+        transition={{
+          type: "spring",
+          stiffness: 320,
+          damping: 28,
+          mass: 0.5,
+        }}
+      >
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
+          <span key={n} className="h-[1.15em] flex items-center justify-center">
+            {n}
+          </span>
+        ))}
+      </motion.span>
+    </span>
+  );
+}
+
+/**
+ * Slot Machine Animated Number Ticker.
+ */
+function SlotMachineNumber({ value, prefix = "" }: { value: number; prefix?: string }) {
+  const formatted = `${prefix}${value.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+
+  return (
+    <span className="inline-flex items-baseline font-mono select-none">
+      {formatted.split("").map((char, index) => (
+        <DigitReel key={`${formatted.length - index}-${char === "." || char === "," || char === "$" || char === "+" || char === "-" ? char : "num"}`} char={char} />
+      ))}
+    </span>
+  );
+}
+
+/**
  * Clean, uncluttered, full-width production dashboard for SidEx.
  *
  * @param props - Component navigation callback props.
@@ -157,21 +207,20 @@ export function Dashboard({ onNavigate }: DashboardProps) {
 
   return (
     <div className="w-full space-y-10 pb-16">
-      {/* 1. Hero Balance (Clean Minimalist Typography) */}
+      {/* 1. Hero Balance with Slot Machine Rolling Digits */}
       <section className="space-y-2 pt-2">
         <span className="text-sm font-medium text-zinc-400">
           Portfolio
         </span>
 
-        {/* Large Clean Balance */}
+        {/* Large Slot Machine Balance */}
         <div className="flex items-baseline gap-4">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white font-mono">
-            {showValue
-              ? `$${displayValue.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}`
-              : "••••••••"}
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white font-mono flex items-baseline">
+            {showValue ? (
+              <SlotMachineNumber value={displayValue} prefix="$" />
+            ) : (
+              "••••••••"
+            )}
           </h1>
           <button
             type="button"
@@ -183,7 +232,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           </button>
         </div>
 
-        {/* Dynamic PnL */}
+        {/* Dynamic PnL with Slot Machine Rolling Digits */}
         <div
           className={`flex items-center gap-2 text-sm sm:text-base font-semibold ${
             isGain ? "text-emerald-400" : "text-red-400"
@@ -194,14 +243,11 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           ) : (
             <ArrowDownRight className="w-4 h-4" />
           )}
-          <span>
-            {isGain ? "+" : ""}$
-            {Math.abs(diff).toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}{" "}
-            ({isGain ? "+" : ""}
-            {percentChange}%)
+          <span className="flex items-baseline">
+            <SlotMachineNumber value={Math.abs(diff)} prefix={isGain ? "+$" : "-$"} />
+            <span className="ml-1.5">
+              ({isGain ? "+" : ""}{percentChange}%)
+            </span>
           </span>
           <span className="text-xs font-normal text-zinc-500 font-mono">
             • {timeframeLabel}

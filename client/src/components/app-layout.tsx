@@ -76,7 +76,6 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background relative flex flex-col justify-between">
-      <AmbientBackground />
       {/* Header */}
       <header
         className={`sticky top-0 z-50 w-full transition-colors ${isScrolled
@@ -306,8 +305,8 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
       </header>
 
-      {/* Main Content - Balanced Luxury Viewport */}
-      <main className="w-full max-w-6xl mx-auto px-6 sm:px-8 py-6 flex-1 flex flex-col">
+      {/* Main Content - Widened Canvas Viewport */}
+      <main className="w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-16 py-6 flex-1 flex flex-col">
         <motion.div
           key={pathname}
           initial={{ opacity: 0, y: 20 }}
@@ -321,7 +320,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Sleek Minimalist Footer - Pinned to Viewport Bottom */}
       <footer className="border-t border-white/5 py-6 mt-auto bg-black/40 backdrop-blur-md w-full">
-        <div className="w-full max-w-6xl mx-auto px-6 sm:px-8">
+        <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-16">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-zinc-500">
             {/* Left: Brand & Network */}
             <div className="flex items-center gap-2.5">

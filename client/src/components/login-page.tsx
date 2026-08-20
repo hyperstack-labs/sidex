@@ -101,7 +101,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
           />
           <div className="flex items-center gap-2">
             <span className="text-sm sm:text-base font-semibold text-white tracking-tight">Sidra Chain</span>
-            <span className="text-[11px] font-mono text-zinc-400 bg-zinc-900/80 px-2 py-0.5 rounded border border-white/5 hidden sm:inline-block">
+            <span className="text-[11px] font-mono text-zinc-400 border border-white/10 px-2 py-0.5 rounded-full hidden sm:inline-block">
               Mainnet 97453
             </span>
           </div>
@@ -224,7 +224,7 @@ export function LoginPage({ onLogin }: LoginPageProps) {
                 <label className="text-sm font-medium tracking-tight text-zinc-100">Secret Recovery Phrase</label>
                 <div className="flex items-center gap-2">
                   {wordsCount > 0 && (
-                    <span className="text-xs font-mono text-zinc-400 bg-zinc-900/80 px-2.5 py-0.5 rounded border border-white/5">
+                    <span className="text-xs font-mono text-zinc-400 border border-white/10 px-2 py-0.5 rounded-full">
                       {wordsCount} {wordsCount === 1 ? "word" : "words"}
                     </span>
                   )}

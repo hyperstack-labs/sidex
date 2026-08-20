@@ -96,10 +96,9 @@ export function WalletConnectButton({
                     return (
                       <button
                         onClick={() => setIsAccountOpen(true)}
-                        className={`${fullWidth ? "w-full" : ""} inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900/90 border border-white/10 hover:border-white/25 text-white text-xs font-mono px-3.5 h-9 transition-colors cursor-pointer`}
+                        className={`${fullWidth ? "w-full" : ""} inline-flex items-center justify-center rounded-full border border-white/15 hover:border-white/30 bg-transparent text-zinc-200 hover:text-white text-xs sm:text-[13px] font-mono px-3.5 h-9 transition-colors cursor-pointer`}
                         title="View Vault Account Details"
                       >
-                        <span className="w-2 h-2 rounded-full bg-emerald-400" />
                         <span>
                           {vaultAddress.slice(0, 6)}...{vaultAddress.slice(-4)}
                         </span>
@@ -164,13 +163,10 @@ export function WalletConnectButton({
                   </DialogHeader>
 
                   {/* Address Box */}
-                  <div className="bg-black/60 border border-white/10 rounded-xl p-3.5 space-y-2">
+                  <div className="bg-transparent border border-white/10 rounded-xl p-3.5 space-y-1.5">
                     <div className="flex items-center justify-between text-[11px] text-zinc-400">
                       <span>Account Address</span>
-                      <span className="flex items-center gap-1.5 text-emerald-400 font-mono">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                        Active
-                      </span>
+                      <span className="text-zinc-400 font-mono">Active</span>
                     </div>
                     <p className="font-mono text-xs text-zinc-200 break-all select-all leading-relaxed">
                       {vaultAddress}

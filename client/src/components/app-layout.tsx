@@ -51,7 +51,6 @@ const navigation = [
 export function AppLayout({ children }: AppLayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [legalModal, setLegalModal] = useState<"tos" | "privacy" | null>(null);
-  const [notificationOpen, setNotificationOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -84,38 +83,41 @@ export function AppLayout({ children }: AppLayoutProps) {
           : "border-b border-transparent bg-transparent"
           }`}
       >
-        <div className="w-full flex h-16 items-center justify-between px-6 md:px-12 relative">
+        <div className="w-full flex h-18 md:h-20 items-center justify-between px-6 md:px-12 relative">
           {/* Logo - Left Side */}
-          <div className="flex items-center gap-2 cursor-pointer h-9 flex-1 group" onClick={() => router.push("/dashboard")}>
-            <div className="flex flex-col items-start sm:items-center justify-center h-full">
+          <div className="flex items-center gap-2.5 cursor-pointer flex-1 group" onClick={() => router.push("/dashboard")}>
+            <div className="flex flex-col items-start justify-center">
               <Image
                 src="/sidex.png"
                 alt="SidEx"
-                width={100}
-                height={32}
-                className="w-auto h-auto"
+                width={120}
+                height={38}
+                className="w-auto h-7 md:h-8 object-contain"
                 priority
               />
-              <p className="hidden sm:block text-[10px] text-muted-foreground leading-tight transition-all duration-300 group-hover:text-white group-hover:[text-shadow:0_0_15px_rgba(255,255,255,0.6)]">Sharia-Compliant Wallet</p>
+              <p className="hidden sm:block text-[11px] text-zinc-400 font-mono tracking-wider transition-all duration-300 group-hover:text-white">
+                Sharia-Compliant Wallet
+              </p>
             </div>
           </div>
 
-          {/* Desktop Navigation - Absolutely Centered */}
-          <nav className="hidden md:flex items-center justify-center gap-2 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          {/* Desktop Navigation - Absolutely Centered & Bold Prominent (Gotrade Style) */}
+          <nav className="hidden md:flex items-center justify-center gap-6 lg:gap-8 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
             {navigation.map((item) => {
               const isActive = pathname.startsWith(item.path);
               return (
-                <Button
+                <button
                   key={item.id}
-                  variant="ghost"
+                  type="button"
                   onClick={() => router.push(item.path)}
-                  className={`px-4 py-2 transition-all duration-300 bg-transparent! hover:bg-transparent! active:bg-transparent! focus-visible:bg-transparent! ${isActive
-                    ? "text-white [text-shadow:0_0_20px_rgba(255,255,255,0.8)]"
-                    : "text-muted-foreground hover:text-white hover:[text-shadow:0_0_15px_rgba(255,255,255,0.6)]"
-                    }`}
+                  className={`text-[15px] lg:text-base font-semibold transition-all duration-200 cursor-pointer ${
+                    isActive
+                      ? "text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.7)]"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
                 >
                   {item.label}
-                </Button>
+                </button>
               );
             })}
           </nav>
@@ -218,41 +220,78 @@ export function AppLayout({ children }: AppLayoutProps) {
           <div className="hidden md:flex flex-1 justify-end items-center gap-3 min-w-0">
             {/* Wallet Connect Button */}
             <WalletConnectButton />
-            {/* Notification Bell */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-9 w-9 relative bg-transparent! hover:bg-transparent! active:bg-transparent! focus-visible:bg-transparent! text-muted-foreground hover:text-white transition-colors"
-              onClick={() => setNotificationOpen(true)}
-            >
-              <Bell className="h-5 w-5" />
-              {/* Notification Badge */}
-              <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-[#01AACA] ring-2 ring-background animate-pulse" />
-            </Button>
+            {/* Notification Bell with Sleek Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 relative bg-transparent! hover:bg-transparent! active:bg-transparent! focus-visible:bg-transparent! text-muted-foreground hover:text-white transition-colors cursor-pointer"
+                >
+                  <Bell className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-80 sm:w-96 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl p-0 rounded-2xl shadow-2xl overflow-hidden">
+                {/* Header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+                  <span className="text-xs font-semibold text-white">System Status: Operational</span>
+                  <span className="text-[10px] font-mono text-zinc-500">Sidra Chain</span>
+                </div>
+
+                {/* Notifications Flat Editorial List (Zero Box-in-a-Box) */}
+                <div className="divide-y divide-white/5 text-xs max-h-80 overflow-y-auto">
+                  <div className="p-3.5 hover:bg-white/[0.02] transition-colors space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-zinc-200">Compliance Verified</span>
+                      <span className="text-[10px] text-zinc-500 font-mono">Just now</span>
+                    </div>
+                    <p className="text-zinc-400 text-[11px] leading-relaxed">
+                      AAOIFI Standards Met. All spot exchange modules actively monitoring transactions.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 hover:bg-white/[0.02] transition-colors space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-zinc-200">Zakat Calculator Active</span>
+                      <span className="text-[10px] text-zinc-500 font-mono">5m ago</span>
+                    </div>
+                    <p className="text-zinc-400 text-[11px] leading-relaxed">
+                      Auto-calculation and precious metal Nisab thresholds synced.
+                    </p>
+                  </div>
+
+                  <div className="p-3.5 hover:bg-white/[0.02] transition-colors space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-zinc-200">Market Intelligence Feed</span>
+                      <span className="text-[10px] text-zinc-500 font-mono">12m ago</span>
+                    </div>
+                    <p className="text-zinc-400 text-[11px] leading-relaxed">
+                      Live Sidra Chain RPC data stream connected with zero latency.
+                    </p>
+                  </div>
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Account Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-9 gap-2 px-2 text-muted-foreground bg-transparent! hover:bg-transparent! active:bg-transparent! focus-visible:bg-transparent!">
-                  <Avatar className="size-8">
-                    <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
-                      SE
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="hidden lg:inline">Account</span>
+                <Button variant="ghost" className="h-9 gap-2.5 px-2.5 text-zinc-200 hover:text-white bg-transparent! hover:bg-transparent! active:bg-transparent! focus-visible:bg-transparent! cursor-pointer">
+                  <div className="w-7 h-7 rounded-full border border-white/20 bg-zinc-900/90 flex items-center justify-center text-xs font-mono font-medium text-zinc-200">
+                    SE
+                  </div>
+                  <span className="hidden lg:inline text-sm font-semibold">Account</span>
                   <ChevronDown className="size-4 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64">
-                <DropdownMenuLabel className="px-2 py-2">
+              <DropdownMenuContent align="end" className="w-64 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-1">
+                <DropdownMenuLabel className="px-3 py-2.5">
                   <div className="flex items-center gap-3">
-                    <Avatar className="size-9">
-                      <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
-                        SE
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="w-8 h-8 rounded-full border border-white/15 bg-zinc-900/90 flex items-center justify-center text-xs font-mono font-medium text-zinc-300">
+                      SE
+                    </div>
                     <div className="leading-tight">
-                      <div className="text-sm font-medium">Account</div>
+                      <div className="text-sm font-medium text-white">Account</div>
                       <div className="text-xs text-muted-foreground">SidEx Wallet</div>
                     </div>
                   </div>
@@ -307,84 +346,6 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       <FloatingAIAssistant />
       <LegalModal type={legalModal} onClose={() => setLegalModal(null)} />
-
-      {/* System Status Notification Dialog */}
-      <Dialog open={notificationOpen} onOpenChange={setNotificationOpen}>
-        <DialogContent className="sm:max-w-150 bg-zinc-950 border-zinc-800">
-          <DialogHeader>
-            <div className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-[#01AACA]" />
-              <DialogTitle className="text-xl">System Status: Operational</DialogTitle>
-            </div>
-            <DialogDescription className="sr-only">
-              Real-time monitoring and status information for the SidEx platform.
-            </DialogDescription>
-          </DialogHeader>
-                    
-          <div className="space-y-4 py-4">
-            {/* Main Status Message */}
-            <p className="text-sm text-muted-foreground">
-              SidraChain connection established. All compliance modules are active and monitoring real-time transactions.
-            </p>
-
-            {/* Status Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Compliance Verified */}
-              <div className="flex items-start gap-3 p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
-                <div className="mt-0.5">
-                  <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                    <Shield className="h-4 w-4 text-emerald-500" />
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-sm font-semibold text-white mb-0.5">Compliance Verified</h4>
-                  <p className="text-xs text-muted-foreground">AAOIFI Standards Met</p>
-                </div>
-              </div>
-
-              {/* Zakat Calculator */}
-              <div className="flex items-start gap-3 p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
-                <div className="mt-0.5">
-                  <div className="h-8 w-8 rounded-full bg-[#01AACA]/10 flex items-center justify-center">
-                    <svg className="h-4 w-4 text-[#01AACA]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-sm font-semibold text-white mb-0.5">Zakat Calculator</h4>
-                  <p className="text-xs text-muted-foreground">Auto-calculation Active</p>
-                </div>
-              </div>
-
-              {/* Market Intelligence */}
-              <div className="flex items-start gap-3 p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
-                <div className="mt-0.5">
-                  <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center">
-                    <svg className="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h4 className="text-sm font-semibold text-white mb-0.5">Market Intelligence</h4>
-                  <p className="text-xs text-muted-foreground">Live Data Feed</p>
-                </div>
-              </div>
-            </div>
-            
-            {/* Acknowledge Button */}
-            <div className="flex justify-end pt-2">
-              <Button
-                onClick={() => setNotificationOpen(false)}
-                className="bg-white/10 hover:bg-white/20 text-white border border-white/20"
-              >
-                Acknowledge
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

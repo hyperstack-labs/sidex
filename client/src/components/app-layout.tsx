@@ -12,6 +12,7 @@ import {
   Shield,
   LogOut,
   Bell,
+  User,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -183,14 +184,12 @@ export function AppLayout({ children }: AppLayoutProps) {
                   </Button>
                   <div className="my-4 border-t border-border" />
                   <div className="flex items-center gap-3 px-2 py-2">
-                    <Avatar className="size-9">
-                      <AvatarFallback className="bg-primary text-primary-foreground text-xs font-bold">
-                        SE
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="w-8 h-8 rounded-full border border-white/10 bg-zinc-900 flex items-center justify-center text-zinc-400">
+                      <User className="w-4 h-4" />
+                    </div>
                     <div className="leading-tight">
                       <p className="text-sm font-medium">Account</p>
-                      <p className="text-xs text-muted-foreground">Manage wallet access</p>
+                      <p className="text-xs text-muted-foreground">SidEx Vault Session</p>
                     </div>
                   </div>
                   <Button
@@ -276,29 +275,29 @@ export function AppLayout({ children }: AppLayoutProps) {
             {/* Account Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-9 gap-2.5 px-2.5 text-zinc-200 hover:text-white bg-transparent! hover:bg-transparent! active:bg-transparent! focus-visible:bg-transparent! cursor-pointer">
-                  <div className="w-7 h-7 rounded-full border border-white/20 bg-zinc-900/90 flex items-center justify-center text-xs font-mono font-medium text-zinc-200">
-                    SE
-                  </div>
+                <Button variant="ghost" className="h-9 gap-2 px-2.5 text-zinc-200 hover:text-white bg-transparent! hover:bg-transparent! active:bg-transparent! focus-visible:bg-transparent! cursor-pointer">
+                  <User className="w-4 h-4 text-zinc-400" />
                   <span className="hidden lg:inline text-sm font-semibold">Account</span>
-                  <ChevronDown className="size-4 opacity-60" />
+                  <ChevronDown className="size-3.5 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-1">
+              <DropdownMenuContent align="end" className="w-60 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-1">
                 <DropdownMenuLabel className="px-3 py-2.5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full border border-white/15 bg-zinc-900/90 flex items-center justify-center text-xs font-mono font-medium text-zinc-300">
-                      SE
-                    </div>
+                  <div className="flex items-center gap-2.5">
+                    <User className="w-4 h-4 text-[#01AACA]" />
                     <div className="leading-tight">
-                      <div className="text-sm font-medium text-white">Account</div>
-                      <div className="text-xs text-muted-foreground">SidEx Wallet</div>
+                      <div className="text-sm font-medium text-white">Account Settings</div>
+                      <div className="text-[11px] text-zinc-400 font-mono">SidEx Vault Session</div>
                     </div>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem variant="destructive" onClick={handleLogout}>
-                  <LogOut className="w-4 h-4" />
+                <DropdownMenuSeparator className="bg-white/5" />
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={handleLogout}
+                  className="rounded-xl text-xs font-medium cursor-pointer"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
                   Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>

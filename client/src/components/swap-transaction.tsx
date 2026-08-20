@@ -19,41 +19,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
+import { useTokens, type TokenData } from "@/lib/hooks/use-tokens";
+import { useSwap } from "@/lib/hooks/use-swap";
+
 interface SwapTransactionProps {
   onBack: () => void;
 }
-
-interface TokenData {
-  symbol: string;
-  name: string;
-  balance: string;
-  price: number;
-  image: string;
-}
-
-const availableTokens: TokenData[] = [
-  {
-    symbol: "SDA",
-    name: "Sidra Chain",
-    balance: "10,250.50",
-    price: 12.19,
-    image: "/sidra-chain-removebg-preview.png",
-  },
-  {
-    symbol: "sGOLD",
-    name: "Sidra Gold",
-    balance: "237.50 g",
-    price: 84.20,
-    image: "/sidex.png",
-  },
-  {
-    symbol: "sUSD",
-    name: "Sidra USD",
-    balance: "5,000.00",
-    price: 1.00,
-    image: "/icon.png",
-  },
-];
 
 /**
  * Ultra-Clean Production Web3 Swap for SidEx.
@@ -61,13 +32,14 @@ const availableTokens: TokenData[] = [
  * zero box-in-a-box nesting, and zero circular dots.
  */
 export function SwapTransaction({ onBack }: SwapTransactionProps) {
+  const { tokens: availableTokens } = useTokens();
+  const { executeSwap, isProcessing, txHash } = useSwap();
+
   const [fromToken, setFromToken] = useState<TokenData>(availableTokens[0]);
   const [toToken, setToToken] = useState<TokenData>(availableTokens[1]);
   const [fromAmount, setFromAmount] = useState<string>("");
   const [toAmount, setToAmount] = useState<string>("");
-  const [isTokenSelectorOpen, setIsTokenSelectorOpen] = useState<"from" | "to" | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
-  const [isProcessing, setIsProcessing] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
   const handleFromAmountChange = (value: string) => {
@@ -84,6 +56,7 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
 
   const handlePercentClick = (percent: number) => {
     const numBalance = parseFloat(fromToken.balance.replace(/,/g, ""));
+    if (isNaN(numBalance)) return;
     const calculated = (numBalance * percent).toFixed(4);
     handleFromAmountChange(calculated);
   };
@@ -100,15 +73,21 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
     }
   };
 
-  const handleExecuteSwap = () => {
-    setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
+  const handleExecuteSwap = async () => {
+    try {
+      await executeSwap({
+        fromTokenSymbol: fromToken.symbol,
+        toTokenSymbol: toToken.symbol,
+        fromAmount,
+        toAmount,
+      });
       setIsComplete(true);
       toast.success("Swap Executed", {
         description: `Swapped ${fromAmount} ${fromToken.symbol} for ${toAmount} ${toToken.symbol}`,
       });
-    }, 1600);
+    } catch {
+      // Handled in hook
+    }
   };
 
   const exchangeRate = (fromToken.price / toToken.price).toFixed(6);
@@ -146,12 +125,12 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
           <div className="flex justify-between py-2.5">
             <span className="text-zinc-500">Explorer</span>
             <a
-              href="https://ledger.sidrachain.com"
+              href={`https://ledger.sidrachain.com/tx/${txHash || "0x9f3a41bc"}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#01AACA] hover:underline flex items-center gap-1"
+              className="text-[#01AACA] hover:underline flex items-center gap-1 font-mono"
             >
-              <span>0x9f3a...41bc</span>
+              <span>{txHash ? `${txHash.slice(0, 6)}...${txHash.slice(-4)}` : "0x9f3a...41bc"}</span>
               <ExternalLink className="w-3 h-3" />
             </a>
           </div>

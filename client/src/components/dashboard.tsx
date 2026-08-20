@@ -70,38 +70,7 @@ const chartDataByTimeframe: Record<Timeframe, { time: string; value: number }[]>
   ],
 };
 
-const tokens = [
-  {
-    name: "Sidra Chain",
-    symbol: "SDA",
-    balance: "10,250.50",
-    price: "$12.19",
-    value: "$125,000.00",
-    change: "+12.5%",
-    isPositive: true,
-    image: "/sidra-chain-removebg-preview.png",
-  },
-  {
-    name: "Sidra Gold",
-    symbol: "sGOLD",
-    balance: "237.50 g",
-    price: "$84.20/g",
-    value: "$20,000.00",
-    change: "+1.8%",
-    isPositive: true,
-    image: "/sidex.png",
-  },
-  {
-    name: "Sidra USD",
-    symbol: "sUSD",
-    balance: "5,000.00",
-    price: "$1.00",
-    value: "$5,000.00",
-    change: "0.0%",
-    isPositive: true,
-    image: "/icon.png",
-  },
-];
+import { useTokens } from "@/lib/hooks/use-tokens";
 
 const recentTransactions = [
   {
@@ -191,6 +160,7 @@ function SlotMachineNumber({ value, prefix = "" }: { value: number; prefix?: str
  * @returns Clean dashboard view.
  */
 export function Dashboard({ onNavigate }: DashboardProps) {
+  const { tokens } = useTokens();
   const [showValue, setShowValue] = useState(true);
   const [activeTimeframe, setActiveTimeframe] = useState<Timeframe>("1M");
   const [hoveredPoint, setHoveredPoint] = useState<{ time: string; value: number } | null>(null);
@@ -393,26 +363,21 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                     {token.name}
                   </div>
                   <span className="text-xs font-mono text-zinc-400">
-                    {token.balance} {token.symbol} • {token.price}
+                    {token.balance} • ${token.price.toFixed(2)}{token.symbol === "sGOLD" ? "/g" : ""}
                   </span>
                 </div>
               </div>
 
               <div className="text-right">
                 <p className="font-semibold text-white text-sm sm:text-base font-mono">
-                  {token.value}
+                  ${((parseFloat(token.balance.replace(/[^\d.]/g, "")) || 0) * token.price).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </p>
-                <p
-                  className={`text-xs font-mono flex items-center justify-end gap-0.5 ${
-                    token.isPositive ? "text-emerald-400" : "text-red-400"
-                  }`}
-                >
-                  {token.isPositive ? (
-                    <ArrowUpRight className="w-3.5 h-3.5" />
-                  ) : (
-                    <ArrowDownRight className="w-3.5 h-3.5" />
-                  )}
-                  <span>{token.change}</span>
+                <p className="text-xs font-mono flex items-center justify-end gap-0.5 text-emerald-400">
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                  <span>+1.8%</span>
                 </p>
               </div>
             </motion.div>

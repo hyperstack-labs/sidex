@@ -18,6 +18,8 @@ import { Switch } from "@/components/ui/switch";
 import { useAccount, useDisconnect } from "wagmi";
 import { toast } from "sonner";
 
+import { useEnvMode } from "@/lib/hooks/use-env-mode";
+
 const CURRENCIES = [
   { code: "USD", name: "US Dollar", symbol: "$" },
   { code: "SAR", name: "Saudi Riyal", symbol: "﷼" },
@@ -41,6 +43,7 @@ const CURRENCIES = [
 export function SettingsPage() {
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const { mode, setMode } = useEnvMode();
 
   const [currency, setCurrency] = useState("USD");
   const [nisabBenchmark, setNisabBenchmark] = useState<"gold" | "silver">("gold");
@@ -206,7 +209,47 @@ export function SettingsPage() {
           </div>
         </div>
 
-        {/* 5. Connected Account & Session */}
+        {/* 5. Environment & Data Mode */}
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_360px] gap-4 md:gap-8 py-7 items-center justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-white">Environment & Data Mode</h3>
+            <p className="text-xs text-zinc-400 font-mono mt-0.5">
+              Switch between simulated demo balances and live on-chain Sidra Chain execution.
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 bg-zinc-900/60 p-1 rounded-xl border border-white/10 w-fit md:ml-auto">
+            <button
+              type="button"
+              onClick={() => {
+                setMode("mock");
+                toast.success("Switched to Demo Mode");
+              }}
+              className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                mode === "mock"
+                  ? "bg-[#01AACA] text-zinc-950 shadow-sm font-bold"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              Demo Mode
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("live");
+                toast.success("Switched to Live Mode (Sidra Chain)");
+              }}
+              className={`px-4 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                mode === "live"
+                  ? "bg-emerald-500 text-zinc-950 shadow-sm font-bold"
+                  : "text-zinc-400 hover:text-white"
+              }`}
+            >
+              Live (Sidra Chain)
+            </button>
+          </div>
+        </div>
+
+        {/* 6. Connected Account & Session */}
         {isConnected && address && (
           <div className="grid grid-cols-1 md:grid-cols-[1fr_360px] gap-4 md:gap-8 py-7 items-center justify-between">
             <div>

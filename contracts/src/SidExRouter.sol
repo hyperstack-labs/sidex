@@ -14,9 +14,7 @@ contract SidExRouter {
     address public immutable factory;
 
     modifier ensure(uint256 deadline) {
-        uint256 currentTime = block.timestamp;
-        require(deadline >= currentTime, "SidEx: EXPIRED");
-        require(deadline <= currentTime + 2 hours, "SidEx: DEADLINE_TOO_FAR");
+        require(deadline >= block.timestamp, "SidEx: EXPIRED");
         _;
     }
 

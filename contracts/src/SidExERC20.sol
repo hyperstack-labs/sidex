@@ -86,9 +86,7 @@ contract SidExERC20 {
         bytes32 r,
         bytes32 s
     ) external {
-        uint256 currentTime = block.timestamp;
-        require(deadline >= currentTime, "SidEx: EXPIRED");
-        require(deadline <= currentTime + 2 hours, "SidEx: DEADLINE_TOO_FAR");
+        require(deadline >= block.timestamp, "SidEx: EXPIRED");
         bytes32 digest = keccak256(
             abi.encodePacked(
                 "\x19\x01",

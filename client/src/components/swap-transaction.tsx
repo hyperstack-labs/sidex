@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 
-import { useTokens, type TokenData } from "@/lib/hooks/use-tokens";
+import { useTokens } from "@/lib/hooks/use-tokens";
 import { useSwap } from "@/lib/hooks/use-swap";
 
 interface SwapTransactionProps {
@@ -29,8 +29,12 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
   const { tokens: availableTokens } = useTokens();
   const { executeSwap, isProcessing, txHash } = useSwap();
 
-  const [fromToken, setFromToken] = useState<TokenData>(availableTokens[0]);
-  const [toToken, setToToken] = useState<TokenData>(availableTokens[1]);
+  const [fromSymbol, setFromSymbol] = useState<string>("SDA");
+  const [toSymbol, setToSymbol] = useState<string>("sGOLD");
+
+  const fromToken = availableTokens.find((t) => t.symbol === fromSymbol) || availableTokens[0];
+  const toToken = availableTokens.find((t) => t.symbol === toSymbol) || availableTokens[1];
+
   const [fromAmount, setFromAmount] = useState<string>("");
   const [toAmount, setToAmount] = useState<string>("");
   const [isConfirming, setIsConfirming] = useState(false);
@@ -49,20 +53,22 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
   };
 
   const handlePercentClick = (percent: number) => {
-    const numBalance = parseFloat(fromToken.balance.replace(/,/g, ""));
+    const numBalance = parseFloat(fromToken.balance.replace(/[^\d.]/g, ""));
     if (isNaN(numBalance)) return;
     const calculated = (numBalance * percent).toFixed(4);
     handleFromAmountChange(calculated);
   };
 
   const handleFlipTokens = () => {
-    const prevFrom = fromToken;
-    const prevTo = toToken;
-    setFromToken(prevTo);
-    setToToken(prevFrom);
+    const prevFromSymbol = fromSymbol;
+    const prevToSymbol = toSymbol;
+    const prevFromToken = fromToken;
+    const prevToToken = toToken;
+    setFromSymbol(prevToSymbol);
+    setToSymbol(prevFromSymbol);
     if (toAmount) {
       setFromAmount(toAmount);
-      const calculated = (parseFloat(toAmount) * prevTo.price) / prevFrom.price;
+      const calculated = (parseFloat(toAmount) * prevToToken.price) / prevFromToken.price;
       setToAmount(calculated.toFixed(6));
     }
   };
@@ -286,8 +292,8 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
                 <DropdownMenuItem
                   key={t.symbol}
                   onClick={() => {
-                    if (t.symbol === toToken.symbol) handleFlipTokens();
-                    else setFromToken(t);
+                    if (t.symbol === toSymbol) handleFlipTokens();
+                    else setFromSymbol(t.symbol);
                   }}
                   className="flex items-center justify-between p-2.5 rounded-xl cursor-pointer hover:bg-white/5 focus:bg-white/5 outline-none"
                 >
@@ -374,8 +380,8 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
                 <DropdownMenuItem
                   key={t.symbol}
                   onClick={() => {
-                    if (t.symbol === fromToken.symbol) handleFlipTokens();
-                    else setToToken(t);
+                    if (t.symbol === fromSymbol) handleFlipTokens();
+                    else setToSymbol(t.symbol);
                   }}
                   className="flex items-center justify-between p-2.5 rounded-xl cursor-pointer hover:bg-white/5 focus:bg-white/5 outline-none"
                 >

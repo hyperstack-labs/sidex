@@ -161,13 +161,26 @@ export function Dashboard({ onNavigate }: DashboardProps) {
   const [activeTimeframe, setActiveTimeframe] = useState<Timeframe>("1M");
   const [hoveredPoint, setHoveredPoint] = useState<{ time: string; value: number } | null>(null);
 
-  const currentData = chartDataByTimeframe[activeTimeframe];
+  // Dynamic Live Balance from Token Holdings
+  const totalPortfolioValue = tokens.reduce((acc, t) => {
+    const numBal = parseFloat(t.balance.replace(/[^\d.]/g, "")) || 0;
+    return acc + numBal * t.price;
+  }, 0);
 
-  // Dynamic Live Balance on Hover
-  const baseValue = currentData[0]?.value || 145000;
-  const displayValue = hoveredPoint ? hoveredPoint.value : 150000;
+  // Scale chart historical trend dynamically relative to actual total portfolio balance
+  const rawPoints = chartDataByTimeframe[activeTimeframe];
+  const lastRawVal = rawPoints[rawPoints.length - 1]?.value || 150000;
+  const scaleRatio = totalPortfolioValue > 0 ? totalPortfolioValue / lastRawVal : 1;
+
+  const currentData = rawPoints.map((pt) => ({
+    ...pt,
+    value: Number((pt.value * scaleRatio).toFixed(2)),
+  }));
+
+  const baseValue = currentData[0]?.value || totalPortfolioValue * 0.95;
+  const displayValue = hoveredPoint ? hoveredPoint.value : totalPortfolioValue;
   const diff = displayValue - baseValue;
-  const percentChange = ((diff / baseValue) * 100).toFixed(2);
+  const percentChange = ((diff / Math.max(baseValue, 1)) * 100).toFixed(2);
   const isGain = diff >= 0;
   const timeframeLabel = hoveredPoint ? hoveredPoint.time : "All time";
 
@@ -216,12 +229,14 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={currentData}
-              margin={{ top: 10, right: 0, left: 0, bottom: 0 }}
+              margin={{ top: 10, right: 12, left: 0, bottom: 20 }}
               onMouseMove={(e) => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const activePayload = (e as any)?.activePayload;
-                if (activePayload && activePayload.length > 0) {
-                  setHoveredPoint(activePayload[0].payload);
+                const chartState = e as unknown as {
+                  activePayload?: Array<{ payload: { time: string; value: number } }>;
+                };
+                if (chartState?.activePayload && chartState.activePayload.length > 0) {
+                  const pt = chartState.activePayload[0].payload;
+                  if (pt) setHoveredPoint(pt);
                 }
               }}
               onMouseLeave={() => setHoveredPoint(null)}
@@ -238,15 +253,24 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                 dataKey="time"
                 axisLine={false}
                 tickLine={false}
+                dy={10}
                 tick={{ fill: "#71717a", fontSize: 12, fontFamily: "monospace" }}
               />
               <YAxis
                 orientation="right"
                 axisLine={false}
                 tickLine={false}
-                domain={["dataMin - 2000", "dataMax + 2000"]}
+                dx={8}
+                domain={[
+                  "dataMin - (dataMax - dataMin) * 0.1",
+                  "dataMax + (dataMax - dataMin) * 0.1",
+                ]}
                 tick={{ fill: "#71717a", fontSize: 12, fontFamily: "monospace" }}
-                tickFormatter={(val) => `$${(val / 1000).toFixed(0)}k`}
+                tickFormatter={(val) => {
+                  if (val >= 1000000) return `$${(val / 1000000).toFixed(2)}M`;
+                  if (val >= 1000) return `$${(val / 1000).toFixed(0)}k`;
+                  return `$${val}`;
+                }}
               />
               <Tooltip
                 cursor={{
@@ -254,7 +278,18 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                   strokeWidth: 1,
                   strokeDasharray: "3 3",
                 }}
-                content={() => null}
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length > 0) {
+                    const pt = payload[0].payload as { time: string; value: number };
+                    if (
+                      pt &&
+                      (hoveredPoint?.time !== pt.time || hoveredPoint?.value !== pt.value)
+                    ) {
+                      setTimeout(() => setHoveredPoint(pt), 0);
+                    }
+                  }
+                  return null;
+                }}
               />
               <Area
                 type="monotone"

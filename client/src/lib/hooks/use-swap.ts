@@ -6,6 +6,7 @@ import { useEnvMode } from "./use-env-mode";
 import { CONTRACT_ADDRESSES, SIDEX_ROUTER_ABI } from "@/config/contracts";
 import { parseUnits, type Address } from "viem";
 import { toast } from "sonner";
+import { getDemoBalances, updateDemoBalances } from "./use-tokens";
 
 export interface SwapExecutionParams {
   fromTokenSymbol: string;
@@ -38,8 +39,21 @@ export function useSwap() {
 
     try {
       if (isMockMode || !address) {
-        // Simulated Mock Mode Execution
-        await new Promise((resolve) => setTimeout(resolve, 1400));
+        // Simulated Demo Mode Execution
+        await new Promise((resolve) => setTimeout(resolve, 1200));
+
+        const fromVal = parseFloat(params.fromAmount) || 0;
+        const toVal = parseFloat(params.toAmount) || 0;
+        const currentBalances = getDemoBalances();
+
+        const currentFrom = currentBalances[params.fromTokenSymbol] ?? 0;
+        const currentTo = currentBalances[params.toTokenSymbol] ?? 0;
+
+        updateDemoBalances({
+          [params.fromTokenSymbol]: Math.max(0, currentFrom - fromVal),
+          [params.toTokenSymbol]: currentTo + toVal,
+        });
+
         const mockHash = `0x${Array.from({ length: 64 }, () =>
           Math.floor(Math.random() * 16).toString(16)
         ).join("")}`;

@@ -307,7 +307,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       </header>
 
       {/* Main Content */}
-      <main className="container max-w-4xl mx-auto px-4 py-6">
+      <main className="container max-w-6xl mx-auto px-4 sm:px-8 py-6">
         <motion.div
           key={pathname}
           initial={{ opacity: 0, y: 20 }}
@@ -319,8 +319,8 @@ export function AppLayout({ children }: AppLayoutProps) {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border py-6 mt-12">
-        <div className="container max-w-4xl mx-auto px-4">
+      <footer className="border-t border-white/5 py-8 mt-16">
+        <div className="container max-w-6xl mx-auto px-4 sm:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-sm text-muted-foreground text-center sm:text-left">
               © 2026 SidEx. All rights reserved.

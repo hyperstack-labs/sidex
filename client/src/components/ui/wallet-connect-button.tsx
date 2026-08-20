@@ -1,9 +1,11 @@
 "use client";
+import { useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 /**
  * Custom RainbowKit Wallet Connect button with SidEx branded styling (#01AACA),
  * network status handling, and responsive fullWidth support.
+ * Synchronizes with in-memory derived vault sessions.
  *
  * @param props - Component props
  * @param props.fullWidth - If true, expands button width to 100% (useful in mobile drawers).
@@ -14,6 +16,15 @@ export function WalletConnectButton({
 }: {
   fullWidth?: boolean;
 }) {
+  const [vaultAddress, setVaultAddress] = useState<string | null>(null);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("sidex_vault_address");
+      if (stored) setVaultAddress(stored);
+    } catch {}
+  }, []);
+
   return (
     <ConnectButton.Custom>
       {({
@@ -42,6 +53,21 @@ export function WalletConnectButton({
           >
             {(() => {
               if (!connected) {
+                if (vaultAddress) {
+                  return (
+                    <button
+                      onClick={openConnectModal}
+                      className={`${fullWidth ? "w-full" : ""} inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-900/90 border border-white/10 hover:border-white/25 text-white text-xs font-mono px-3.5 h-9 transition-colors cursor-pointer`}
+                      title="Active Vault Session. Click to link MetaMask/WalletConnect."
+                    >
+                      <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      <span>
+                        {vaultAddress.slice(0, 6)}...{vaultAddress.slice(-4)}
+                      </span>
+                    </button>
+                  );
+                }
+
                 return (
                   <button
                     onClick={openConnectModal}

@@ -64,6 +64,9 @@ export function AppLayout({ children }: AppLayoutProps) {
   }, []);
 
   const handleLogout = () => {
+    try {
+      localStorage.removeItem("sidex_vault_address");
+    } catch {}
     router.push("/login");
   };
 

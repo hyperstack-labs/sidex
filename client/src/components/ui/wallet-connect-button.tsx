@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import {
   Dialog,
@@ -23,22 +23,18 @@ import { useRouter } from "next/navigation";
  * @param props.fullWidth - If true, expands button width to 100% (useful in mobile drawers).
  * @returns Connect button interactive element.
  */
-export function WalletConnectButton({
-  fullWidth = false,
-}: {
-  fullWidth?: boolean;
-}) {
-  const [vaultAddress, setVaultAddress] = useState<string | null>(null);
+export function WalletConnectButton({ fullWidth = false }: { fullWidth?: boolean }) {
+  const [vaultAddress, setVaultAddress] = useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    try {
+      return localStorage.getItem("sidex_vault_address");
+    } catch {
+      return null;
+    }
+  });
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("sidex_vault_address");
-      if (stored) setVaultAddress(stored);
-    } catch {}
-  }, []);
 
   const handleCopy = async () => {
     if (vaultAddress) {

@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import { usePathname, useRouter } from "next/navigation";
 import { LegalModal } from "@/components/legal-modals";
-import { AmbientBackground } from "@/components/ui/ambient-background";
 import { FloatingAIAssistant } from "@/components/ai/floating-ai-assistant";
 import {
   DropdownMenu,
@@ -28,14 +27,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import Image from "next/image";
 import { WalletConnectButton } from "./ui/wallet-connect-button";
 
@@ -103,14 +94,18 @@ export function AppLayout({ children }: AppLayoutProps) {
     <div className="h-screen overflow-hidden bg-background relative flex flex-col">
       {/* Header - Fixed Outside Scroll Container */}
       <header
-        className={`shrink-0 z-50 w-full transition-colors ${isScrolled
-          ? "border-b border-border/40 bg-background/60 backdrop-blur supports-backdrop-filter:bg-background/40"
-          : "border-b border-transparent bg-transparent"
-          }`}
+        className={`shrink-0 z-50 w-full transition-colors ${
+          isScrolled
+            ? "border-b border-border/40 bg-background/60 backdrop-blur supports-backdrop-filter:bg-background/40"
+            : "border-b border-transparent bg-transparent"
+        }`}
       >
         <div className="w-full flex h-18 md:h-20 items-center justify-between px-6 md:px-12 relative">
           {/* Logo - Left Side */}
-          <div className="flex items-center gap-2.5 cursor-pointer flex-1 group" onClick={() => router.push("/dashboard")}>
+          <div
+            className="flex items-center gap-2.5 cursor-pointer flex-1 group"
+            onClick={() => router.push("/dashboard")}
+          >
             <div className="flex flex-col items-start justify-center">
               <Image
                 src="/sidex.png"
@@ -176,8 +171,9 @@ export function AppLayout({ children }: AppLayoutProps) {
                           router.push(item.path);
                           setMobileMenuOpen(false);
                         }}
-                        className={`w-full justify-center ${isActive ? "bg-primary/10 text-primary" : "text-muted-foreground"
-                          }`}
+                        className={`w-full justify-center ${
+                          isActive ? "bg-primary/10 text-primary" : "text-muted-foreground"
+                        }`}
                       >
                         {item.label}
                       </Button>
@@ -254,10 +250,15 @@ export function AppLayout({ children }: AppLayoutProps) {
                   <Bell className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-80 sm:w-96 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl p-0 rounded-2xl shadow-2xl overflow-hidden">
+              <DropdownMenuContent
+                align="end"
+                className="w-80 sm:w-96 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl p-0 rounded-2xl shadow-2xl overflow-hidden"
+              >
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02]">
-                  <span className="text-xs font-semibold text-white">System Status: Operational</span>
+                  <span className="text-xs font-semibold text-white">
+                    System Status: Operational
+                  </span>
                   <span className="text-[10px] font-mono text-zinc-500">Sidra Chain</span>
                 </div>
 
@@ -269,7 +270,8 @@ export function AppLayout({ children }: AppLayoutProps) {
                       <span className="text-[10px] text-zinc-500 font-mono">Just now</span>
                     </div>
                     <p className="text-zinc-400 text-[11px] leading-relaxed">
-                      AAOIFI Standards Met. All spot exchange modules actively monitoring transactions.
+                      AAOIFI Standards Met. All spot exchange modules actively monitoring
+                      transactions.
                     </p>
                   </div>
 
@@ -299,13 +301,19 @@ export function AppLayout({ children }: AppLayoutProps) {
             {/* Account Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-9 gap-2 px-2.5 text-zinc-200 hover:text-white bg-transparent! hover:bg-transparent! active:bg-transparent! focus-visible:bg-transparent! cursor-pointer">
+                <Button
+                  variant="ghost"
+                  className="h-9 gap-2 px-2.5 text-zinc-200 hover:text-white bg-transparent! hover:bg-transparent! active:bg-transparent! focus-visible:bg-transparent! cursor-pointer"
+                >
                   <User className="w-4 h-4 text-zinc-400" />
                   <span className="hidden lg:inline text-sm font-semibold">Account</span>
                   <ChevronDown className="size-3.5 opacity-60" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-60 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-1">
+              <DropdownMenuContent
+                align="end"
+                className="w-60 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-1"
+              >
                 <DropdownMenuLabel className="px-3 py-2.5">
                   <div className="flex items-center gap-2.5">
                     <User className="w-4 h-4 text-[#01AACA]" />

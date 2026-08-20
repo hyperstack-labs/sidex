@@ -16,14 +16,8 @@ export function FloatingAIAssistant() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
 
-  const {
-    messages,
-    inputValue,
-    setInputValue,
-    isTyping,
-    handleQuickAction,
-    handleSendMessage,
-  } = useAIAssistant();
+  const { messages, inputValue, setInputValue, isTyping, handleQuickAction, handleSendMessage } =
+    useAIAssistant();
 
   useEffect(() => {
     if (!open) return;
@@ -34,11 +28,7 @@ export function FloatingAIAssistant() {
   }, [open]);
 
   return (
-    <div
-      className="fixed bottom-5 right-5 z-50"
-      role="group"
-      aria-label="AI assistant"
-    >
+    <div className="fixed bottom-5 right-5 z-50" role="group" aria-label="AI assistant">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button

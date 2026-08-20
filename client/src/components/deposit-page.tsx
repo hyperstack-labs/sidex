@@ -44,10 +44,7 @@ export function DepositPage({ onBack }: DepositPageProps) {
         Back
       </Button>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
         <Card className="border-emerald-500/20 bg-card/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -70,9 +67,7 @@ export function DepositPage({ onBack }: DepositPageProps) {
                         <span>
                           {token.name} ({token.symbol})
                         </span>
-                        <span className="text-xs text-muted-foreground">
-                          {token.network}
-                        </span>
+                        <span className="text-xs text-muted-foreground">{token.network}</span>
                       </div>
                     </SelectItem>
                   ))}
@@ -109,10 +104,9 @@ export function DepositPage({ onBack }: DepositPageProps) {
                   onClick={handleCopyAddress}
                   variant="outline"
                   size="icon"
-                  className={`shrink-0 ${copied
-                      ? "bg-emerald-500/20 border-emerald-500/30"
-                      : "border-primary/20"
-                    }`}
+                  className={`shrink-0 ${
+                    copied ? "bg-emerald-500/20 border-emerald-500/30" : "border-primary/20"
+                  }`}
                 >
                   {copied ? (
                     <CheckCircle className="w-4 h-4 text-emerald-400" />
@@ -130,8 +124,8 @@ export function DepositPage({ onBack }: DepositPageProps) {
                 Network: {selectedTokenData?.network}
               </h4>
               <p className="text-sm text-muted-foreground">
-                Only send {selectedToken} tokens to this address. Sending other tokens
-                may result in permanent loss.
+                Only send {selectedToken} tokens to this address. Sending other tokens may result in
+                permanent loss.
               </p>
             </div>
 
@@ -141,27 +135,20 @@ export function DepositPage({ onBack }: DepositPageProps) {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <span className="text-primary mt-1">•</span>
-                  <span>
-                    Minimum deposit: 0.01 {selectedToken}
-                  </span>
+                  <span>Minimum deposit: 0.01 {selectedToken}</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary mt-1">•</span>
-                  <span>
-                    Deposits require 12 network confirmations
-                  </span>
+                  <span>Deposits require 12 network confirmations</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-primary mt-1">•</span>
-                  <span>
-                    This address is non-custodial. You have full control of your keys.
-                  </span>
+                  <span>This address is non-custodial. You have full control of your keys.</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="text-emerald-400 mt-1">✓</span>
                   <span>
-                    All incoming transactions are automatically checked for Sharia
-                    compliance
+                    All incoming transactions are automatically checked for Sharia compliance
                   </span>
                 </li>
               </ul>
@@ -169,11 +156,7 @@ export function DepositPage({ onBack }: DepositPageProps) {
 
             {/* Actions */}
             <div className="grid grid-cols-2 gap-3 pt-4 border-t border-border">
-              <Button
-                variant="outline"
-                className="border-primary/20"
-                onClick={handleCopyAddress}
-              >
+              <Button variant="outline" className="border-primary/20" onClick={handleCopyAddress}>
                 <Copy className="w-4 h-4 mr-2" />
                 Copy Address
               </Button>
@@ -198,9 +181,7 @@ export function DepositPage({ onBack }: DepositPageProps) {
             <div className="text-center py-8 text-muted-foreground">
               <QrCode className="w-12 h-12 mx-auto mb-3 opacity-50" />
               <p>No recent deposits</p>
-              <p className="text-sm mt-1">
-                Your deposits will appear here once confirmed
-              </p>
+              <p className="text-sm mt-1">Your deposits will appear here once confirmed</p>
             </div>
           </CardContent>
         </Card>

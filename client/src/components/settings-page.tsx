@@ -1,12 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  Check,
-  Copy,
-  ExternalLink,
-  RotateCcw,
-} from "lucide-react";
+import { useState } from "react";
+import { Check, Copy, ExternalLink, RotateCcw } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -45,25 +40,35 @@ export function SettingsPage() {
   const { disconnect } = useDisconnect();
   const { mode, setMode } = useEnvMode();
 
-  const [currency, setCurrency] = useState("USD");
-  const [nisabBenchmark, setNisabBenchmark] = useState<"gold" | "silver">("gold");
-  const [isSolarCalendar, setIsSolarCalendar] = useState(false);
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
+  const [currency, setCurrency] = useState<string>(() => {
+    if (typeof window === "undefined") return "USD";
     try {
-      const savedCurrency = localStorage.getItem("sidex_currency");
-      if (savedCurrency) setCurrency(savedCurrency);
+      return localStorage.getItem("sidex_currency") || "USD";
+    } catch {
+      return "USD";
+    }
+  });
 
-      const savedBenchmark = localStorage.getItem("sidex_nisab_benchmark");
-      if (savedBenchmark === "gold" || savedBenchmark === "silver") {
-        setNisabBenchmark(savedBenchmark);
-      }
+  const [nisabBenchmark, setNisabBenchmark] = useState<"gold" | "silver">(() => {
+    if (typeof window === "undefined") return "gold";
+    try {
+      const saved = localStorage.getItem("sidex_nisab_benchmark");
+      return saved === "gold" || saved === "silver" ? saved : "gold";
+    } catch {
+      return "gold";
+    }
+  });
 
-      const savedSolar = localStorage.getItem("sidex_solar_calendar");
-      if (savedSolar) setIsSolarCalendar(savedSolar === "true");
-    } catch {}
-  }, []);
+  const [isSolarCalendar, setIsSolarCalendar] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      return localStorage.getItem("sidex_solar_calendar") === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  const [copied, setCopied] = useState(false);
 
   const handleCurrencyChange = (newCurrency: string) => {
     setCurrency(newCurrency);
@@ -86,9 +91,7 @@ export function SettingsPage() {
     try {
       localStorage.setItem("sidex_solar_calendar", String(checked));
       toast.success(
-        checked
-          ? "Zakat adjusted to 2.577% (Solar Year)"
-          : "Zakat set to 2.5% (Lunar Year)"
+        checked ? "Zakat adjusted to 2.577% (Solar Year)" : "Zakat set to 2.5% (Lunar Year)"
       );
     } catch {}
   };
@@ -267,7 +270,11 @@ export function SettingsPage() {
                   className="text-zinc-400 hover:text-white p-1 transition-colors cursor-pointer"
                   title="Copy address"
                 >
-                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copied ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
                 </button>
               </div>
 

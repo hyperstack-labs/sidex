@@ -1,14 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import {
-  ArrowUpDown,
-  CheckCircle,
-  Loader2,
-  ChevronDown,
-  ExternalLink,
-} from "lucide-react";
+import { motion } from "motion/react";
+import { ArrowUpDown, CheckCircle, Loader2, ChevronDown, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
@@ -104,19 +98,21 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
 
         <div className="space-y-1">
           <h2 className="text-2xl font-bold text-white tracking-tight">Swap Confirmed</h2>
-          <p className="text-xs font-mono text-zinc-400">
-            Settled on Sidra Chain
-          </p>
+          <p className="text-xs font-mono text-zinc-400">Settled on Sidra Chain</p>
         </div>
 
         <div className="divide-y divide-white/5 text-xs font-mono text-left py-2">
           <div className="flex justify-between py-2.5">
             <span className="text-zinc-500">Paid</span>
-            <span className="text-white font-medium">{fromAmount} {fromToken.symbol}</span>
+            <span className="text-white font-medium">
+              {fromAmount} {fromToken.symbol}
+            </span>
           </div>
           <div className="flex justify-between py-2.5">
             <span className="text-zinc-500">Received</span>
-            <span className="text-emerald-400 font-medium">{toAmount} {toToken.symbol}</span>
+            <span className="text-emerald-400 font-medium">
+              {toAmount} {toToken.symbol}
+            </span>
           </div>
           <div className="flex justify-between py-2.5">
             <span className="text-zinc-500">Gas</span>
@@ -130,7 +126,9 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
               rel="noopener noreferrer"
               className="text-[#01AACA] hover:underline flex items-center gap-1 font-mono"
             >
-              <span>{txHash ? `${txHash.slice(0, 6)}...${txHash.slice(-4)}` : "0x9f3a...41bc"}</span>
+              <span>
+                {txHash ? `${txHash.slice(0, 6)}...${txHash.slice(-4)}` : "0x9f3a...41bc"}
+              </span>
               <ExternalLink className="w-3 h-3" />
             </a>
           </div>
@@ -179,7 +177,9 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
           <div className="flex justify-between items-baseline">
             <div>
               <p className="text-[11px] font-mono text-zinc-500 uppercase">You Pay</p>
-              <p className="text-3xl font-bold font-mono text-white">{fromAmount} {fromToken.symbol}</p>
+              <p className="text-3xl font-bold font-mono text-white">
+                {fromAmount} {fromToken.symbol}
+              </p>
             </div>
             <p className="text-xs font-mono text-zinc-400">≈ ${fromUsd} USD</p>
           </div>
@@ -187,7 +187,9 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
           <div className="pt-4 flex justify-between items-baseline">
             <div>
               <p className="text-[11px] font-mono text-zinc-500 uppercase">You Receive</p>
-              <p className="text-3xl font-bold font-mono text-emerald-400">{toAmount} {toToken.symbol}</p>
+              <p className="text-3xl font-bold font-mono text-emerald-400">
+                {toAmount} {toToken.symbol}
+              </p>
             </div>
             <p className="text-xs font-mono text-zinc-400">≈ ${toUsd} USD</p>
           </div>
@@ -196,7 +198,9 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
         <div className="py-2 text-xs font-mono text-zinc-400 space-y-2">
           <div className="flex justify-between">
             <span>Rate</span>
-            <span className="text-zinc-200">1 {fromToken.symbol} = {exchangeRate} {toToken.symbol}</span>
+            <span className="text-zinc-200">
+              1 {fromToken.symbol} = {exchangeRate} {toToken.symbol}
+            </span>
           </div>
           <div className="flex justify-between">
             <span>Slippage</span>
@@ -274,7 +278,10 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
                 <ChevronDown className="w-3.5 h-3.5 opacity-60" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-1.5 z-50 divide-y divide-white/5">
+            <DropdownMenuContent
+              align="end"
+              className="w-64 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-1.5 z-50 divide-y divide-white/5"
+            >
               {availableTokens.map((t) => (
                 <DropdownMenuItem
                   key={t.symbol}
@@ -294,7 +301,9 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
                     />
                     <div>
                       <div className="font-semibold text-white text-xs">{t.name}</div>
-                      <div className="text-[10px] text-zinc-500 font-mono">{t.symbol} • ${t.price}</div>
+                      <div className="text-[10px] text-zinc-500 font-mono">
+                        {t.symbol} • ${t.price}
+                      </div>
                     </div>
                   </div>
                   <span className="text-xs font-mono text-zinc-400">{t.balance}</span>
@@ -322,7 +331,9 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
       {/* 3. YOU RECEIVE SECTION */}
       <div className="space-y-2">
         <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
-          <span className="font-semibold text-white uppercase tracking-wider text-xs">You Receive</span>
+          <span className="font-semibold text-white uppercase tracking-wider text-xs">
+            You Receive
+          </span>
           <span className="text-zinc-500">
             Balance: <span className="text-zinc-300">{toToken.balance}</span>
           </span>
@@ -355,7 +366,10 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
                 <ChevronDown className="w-3.5 h-3.5 opacity-60" />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-1.5 z-50 divide-y divide-white/5">
+            <DropdownMenuContent
+              align="end"
+              className="w-64 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl rounded-2xl shadow-2xl p-1.5 z-50 divide-y divide-white/5"
+            >
               {availableTokens.map((t) => (
                 <DropdownMenuItem
                   key={t.symbol}
@@ -375,7 +389,9 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
                     />
                     <div>
                       <div className="font-semibold text-white text-xs">{t.name}</div>
-                      <div className="text-[10px] text-zinc-500 font-mono">{t.symbol} • ${t.price}</div>
+                      <div className="text-[10px] text-zinc-500 font-mono">
+                        {t.symbol} • ${t.price}
+                      </div>
                     </div>
                   </div>
                   <span className="text-xs font-mono text-zinc-400">{t.balance}</span>
@@ -395,7 +411,9 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
           animate={{ opacity: 1 }}
           className="text-center text-xs font-mono text-zinc-400 pt-1"
         >
-          <span>1 {fromToken.symbol} ≈ {exchangeRate} {toToken.symbol}</span>
+          <span>
+            1 {fromToken.symbol} ≈ {exchangeRate} {toToken.symbol}
+          </span>
         </motion.div>
       )}
 

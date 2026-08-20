@@ -234,7 +234,8 @@ export async function GET(request: Request) {
       }
     );
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unable to retrieve Nisab pricing data";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unable to retrieve Nisab pricing data";
     return NextResponse.json(
       {
         success: false,

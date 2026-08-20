@@ -15,14 +15,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 const timeframes = ["1D", "1W", "1M", "3M", "1Y", "ALL"] as const;
 type Timeframe = (typeof timeframes)[number];
@@ -147,7 +140,10 @@ function SlotMachineNumber({ value, prefix = "" }: { value: number; prefix?: str
   return (
     <span className="inline-flex items-baseline font-mono select-none">
       {formatted.split("").map((char, index) => (
-        <DigitReel key={`${formatted.length - index}-${char === "." || char === "," || char === "$" || char === "+" || char === "-" ? char : "num"}`} char={char} />
+        <DigitReel
+          key={`${formatted.length - index}-${char === "." || char === "," || char === "$" || char === "+" || char === "-" ? char : "num"}`}
+          char={char}
+        />
       ))}
     </span>
   );
@@ -179,18 +175,12 @@ export function Dashboard({ onNavigate }: DashboardProps) {
     <div className="w-full space-y-10 pb-16">
       {/* 1. Hero Balance with Slot Machine Rolling Digits */}
       <section className="space-y-2 pt-2">
-        <span className="text-sm font-medium text-zinc-400">
-          Portfolio
-        </span>
+        <span className="text-sm font-medium text-zinc-400">Portfolio</span>
 
         {/* Large Slot Machine Balance */}
         <div className="flex items-baseline gap-4">
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white font-mono flex items-baseline">
-            {showValue ? (
-              <SlotMachineNumber value={displayValue} prefix="$" />
-            ) : (
-              "••••••••"
-            )}
+            {showValue ? <SlotMachineNumber value={displayValue} prefix="$" /> : "••••••••"}
           </h1>
           <button
             type="button"
@@ -208,20 +198,15 @@ export function Dashboard({ onNavigate }: DashboardProps) {
             isGain ? "text-emerald-400" : "text-red-400"
           }`}
         >
-          {isGain ? (
-            <TrendingUp className="w-4 h-4" />
-          ) : (
-            <ArrowDownRight className="w-4 h-4" />
-          )}
+          {isGain ? <TrendingUp className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
           <span className="flex items-baseline">
             <SlotMachineNumber value={Math.abs(diff)} prefix={isGain ? "+$" : "-$"} />
             <span className="ml-1.5">
-              ({isGain ? "+" : ""}{percentChange}%)
+              ({isGain ? "+" : ""}
+              {percentChange}%)
             </span>
           </span>
-          <span className="text-xs font-normal text-zinc-500 font-mono">
-            • {timeframeLabel}
-          </span>
+          <span className="text-xs font-normal text-zinc-500 font-mono">• {timeframeLabel}</span>
         </div>
       </section>
 
@@ -359,18 +344,20 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                   />
                 </div>
                 <div>
-                  <div className="font-semibold text-white text-sm sm:text-base">
-                    {token.name}
-                  </div>
+                  <div className="font-semibold text-white text-sm sm:text-base">{token.name}</div>
                   <span className="text-xs font-mono text-zinc-400">
-                    {token.balance} • ${token.price.toFixed(2)}{token.symbol === "sGOLD" ? "/g" : ""}
+                    {token.balance} • ${token.price.toFixed(2)}
+                    {token.symbol === "sGOLD" ? "/g" : ""}
                   </span>
                 </div>
               </div>
 
               <div className="text-right">
                 <p className="font-semibold text-white text-sm sm:text-base font-mono">
-                  ${((parseFloat(token.balance.replace(/[^\d.]/g, "")) || 0) * token.price).toLocaleString(undefined, {
+                  $
+                  {(
+                    (parseFloat(token.balance.replace(/[^\d.]/g, "")) || 0) * token.price
+                  ).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}
@@ -419,8 +406,8 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                     tx.isPositive === true
                       ? "text-emerald-400"
                       : tx.isPositive === false
-                      ? "text-zinc-200"
-                      : "text-white"
+                        ? "text-zinc-200"
+                        : "text-white"
                   }`}
                 >
                   {tx.amount}

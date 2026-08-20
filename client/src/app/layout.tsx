@@ -18,8 +18,8 @@ export const metadata: Metadata = {
   title: "SidEx - Sharia-Compliant Wallet",
   description: "AI-powered Sharia-compliant cryptocurrency wallet with aggregated DeFi services",
   icons: {
-    icon: '/icon.png',
-    apple: '/icon.png',
+    icon: "/icon.png",
+    apple: "/icon.png",
   },
 };
 
@@ -30,12 +30,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Web3Provider>
-        {children}
-        </Web3Provider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Web3Provider>{children}</Web3Provider>
       </body>
     </html>
   );

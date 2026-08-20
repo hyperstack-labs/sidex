@@ -6,10 +6,10 @@
   --font-size: 16px;
 
   /* SidEx Custom Colors */
-  --sidex-teal: #01AACA;
-  --sidex-charcoal: #0B2733;
-  --sidex-gold: #E9B44C;
-  --sidex-dark-bg: #0A1F2A;
+  --sidex-teal: #01aaca;
+  --sidex-charcoal: #0b2733;
+  --sidex-gold: #e9b44c;
+  --sidex-dark-bg: #0a1f2a;
   --sidex-glass: rgba(1, 170, 202, 0.1);
 
   --background: #ffffff;
@@ -24,7 +24,7 @@
   --secondary-foreground: #030213;
   --muted: #ececf0;
   --muted-foreground: #717182;
-  --accent: #01AACA;
+  --accent: #01aaca;
   --accent-foreground: #030213;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
@@ -35,7 +35,7 @@
   --font-weight-medium: 500;
   --font-weight-normal: 400;
   --ring: oklch(0.708 0 0);
-  --chart-1: #01AACA;
+  --chart-1: #01aaca;
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
@@ -65,18 +65,18 @@
   --secondary-foreground: #ffffff;
   --muted: #27272a;
   --muted-foreground: #a1a1aa;
-  --accent: #01AACA;
+  --accent: #01aaca;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
   --border: #27272a;
   --input: #27272a;
   --ring: #ffffff;
-  --chart-1: #01AACA;
-  --chart-2: #E9B44C;
-  --chart-3: #10B981;
-  --chart-4: #01AACA;
-  --chart-5: #01AACA;
+  --chart-1: #01aaca;
+  --chart-2: #e9b44c;
+  --chart-3: #10b981;
+  --chart-4: #01aaca;
+  --chart-5: #01aaca;
   --sidebar: #000000;
   --sidebar-foreground: #ffffff;
   --sidebar-primary: #ffffff;
@@ -193,7 +193,6 @@
 }
 
 @layer utilities {
-
   /* Custom text-shadow utilities for navigation glow effects */
   .\[text-shadow\:0_0_20px_rgba\(255\2c 255\2c 255\2c 0\.8\)\] {
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
@@ -208,7 +207,6 @@
 
 /* Animated Background Gradient */
 @keyframes gradient-shift {
-
   0%,
   100% {
     background-position: 0% 50%;
@@ -220,12 +218,14 @@
 }
 
 .animate-gradient {
-  background: linear-gradient(135deg,
-      #0A1F2A 0%,
-      #0B2733 25%,
-      #01AACA 50%,
-      #0B2733 75%,
-      #0A1F2A 100%);
+  background: linear-gradient(
+    135deg,
+    #0a1f2a 0%,
+    #0b2733 25%,
+    #01aaca 50%,
+    #0b2733 75%,
+    #0a1f2a 100%
+  );
   background-size: 400% 400%;
   animation: gradient-shift 15s ease infinite;
 }
@@ -248,15 +248,17 @@
 }
 
 .glow-border::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: -2px;
   border-radius: inherit;
   padding: 2px;
-  background: linear-gradient(135deg,
-      rgba(1, 170, 202, 0.5),
-      rgba(233, 180, 76, 0.3),
-      rgba(1, 170, 202, 0.5));
+  background: linear-gradient(
+    135deg,
+    rgba(1, 170, 202, 0.5),
+    rgba(233, 180, 76, 0.3),
+    rgba(1, 170, 202, 0.5)
+  );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -275,24 +277,22 @@
 
 /* Smooth Gradient Background */
 .gradient-bg {
-  background: linear-gradient(135deg,
-      #0A1F2A 0%,
-      #0B2733 50%,
-      #0A1F2A 100%);
+  background: linear-gradient(135deg, #0a1f2a 0%, #0b2733 50%, #0a1f2a 100%);
 }
 
 /* Animated Gradient Border */
 @keyframes border-glow {
-
   0%,
   100% {
-    box-shadow: 0 0 5px rgba(1, 170, 202, 0.5),
+    box-shadow:
+      0 0 5px rgba(1, 170, 202, 0.5),
       0 0 10px rgba(1, 170, 202, 0.3),
       0 0 15px rgba(1, 170, 202, 0.2);
   }
 
   50% {
-    box-shadow: 0 0 10px rgba(233, 180, 76, 0.6),
+    box-shadow:
+      0 0 10px rgba(233, 180, 76, 0.6),
       0 0 20px rgba(233, 180, 76, 0.4),
       0 0 30px rgba(233, 180, 76, 0.2);
   }
@@ -314,10 +314,12 @@
 }
 
 .shimmer {
-  background: linear-gradient(90deg,
-      rgba(1, 170, 202, 0.1) 0%,
-      rgba(233, 180, 76, 0.2) 50%,
-      rgba(1, 170, 202, 0.1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(1, 170, 202, 0.1) 0%,
+    rgba(233, 180, 76, 0.2) 50%,
+    rgba(1, 170, 202, 0.1) 100%
+  );
   background-size: 1000px 100%;
   animation: shimmer 2s infinite linear;
 }
@@ -336,7 +338,6 @@
 
 /* Floating Animation */
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0px);
@@ -353,7 +354,6 @@
 
 /* Pulse Glow */
 @keyframes pulse-glow {
-
   0%,
   100% {
     box-shadow: 0 0 20px rgba(1, 170, 202, 0.3);

@@ -1,11 +1,5 @@
 import { useCallback, useState } from "react";
-import {
-  Calculator,
-  FileText,
-  Shield,
-  TrendingUp,
-  type LucideIcon,
-} from "lucide-react";
+import { Calculator, FileText, Shield, TrendingUp, type LucideIcon } from "lucide-react";
 
 export interface Message {
   id: string;
@@ -118,7 +112,7 @@ export function useAIAssistant() {
       setMessages((prev) => [...prev, userMsg]);
       appendAssistantResponse(assistantResponse);
     },
-    [appendAssistantResponse],
+    [appendAssistantResponse]
   );
 
   const handleSendMessage = useCallback(() => {
@@ -135,7 +129,7 @@ export function useAIAssistant() {
     setInputValue("");
 
     appendAssistantResponse(
-      "Query processing limit reached. For specialized financial rulings, please consult a certified Sharia board. This system provides data analysis only.",
+      "Query processing limit reached. For specialized financial rulings, please consult a certified Sharia board. This system provides data analysis only."
     );
   }, [appendAssistantResponse, inputValue]);
 

@@ -8,12 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   Dialog,
   DialogContent,
@@ -107,7 +102,9 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             className="w-7 h-7 object-contain drop-shadow-[0_0_10px_rgba(233,180,76,0.2)]"
           />
           <div className="flex items-center gap-2">
-            <span className="text-sm sm:text-base font-semibold text-white tracking-tight">Sidra Chain</span>
+            <span className="text-sm sm:text-base font-semibold text-white tracking-tight">
+              Sidra Chain
+            </span>
             <span className="text-[11px] font-mono text-zinc-400 border border-white/10 px-2 py-0.5 rounded-full hidden sm:inline-block">
               Mainnet 97453
             </span>
@@ -214,12 +211,18 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button type="button" className="text-zinc-500 hover:text-zinc-300 transition-colors">
+                    <button
+                      type="button"
+                      className="text-zinc-500 hover:text-zinc-300 transition-colors"
+                    >
                       <Info className="w-4 h-4 cursor-help" />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent className="bg-zinc-900 border-zinc-800 text-zinc-300 text-xs max-w-xs p-3">
-                    <p>Your private keys remain encrypted locally. SidEx never has access to your credentials or funds.</p>
+                    <p>
+                      Your private keys remain encrypted locally. SidEx never has access to your
+                      credentials or funds.
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -228,7 +231,9 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             {/* Secret Recovery Phrase Input */}
             <div className="space-y-2.5">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium tracking-tight text-zinc-100">Secret Recovery Phrase</label>
+                <label className="text-sm font-medium tracking-tight text-zinc-100">
+                  Secret Recovery Phrase
+                </label>
                 <div className="flex items-center gap-2">
                   {wordsCount > 0 && (
                     <span className="text-xs font-mono text-zinc-400 border border-white/10 px-2 py-0.5 rounded-full">
@@ -265,10 +270,11 @@ export function LoginPage({ onLogin }: LoginPageProps) {
               <Button
                 onClick={handleLogin}
                 disabled={!recoveryPhrase.trim()}
-                className={`w-full h-11 text-sm tracking-wide rounded-xl transition-all duration-200 ${recoveryPhrase.trim()
+                className={`w-full h-11 text-sm tracking-wide rounded-xl transition-all duration-200 ${
+                  recoveryPhrase.trim()
                     ? "bg-[#01AACA] hover:bg-[#01AACA]/90 text-zinc-950 font-semibold shadow-[0_0_25px_rgba(1,170,202,0.35)] hover:shadow-[0_0_35px_rgba(1,170,202,0.5)] active:scale-[0.99] cursor-pointer"
                     : "bg-zinc-900/90 text-zinc-500 border border-white/5 font-medium cursor-not-allowed shadow-none"
-                  }`}
+                }`}
               >
                 <span>Unlock Wallet</span>
               </Button>
@@ -340,28 +346,33 @@ export function LoginPage({ onLogin }: LoginPageProps) {
             <div className="space-y-1 pt-2 first:pt-0">
               <h4 className="font-medium text-zinc-200">What is a Secret Recovery Phrase?</h4>
               <p className="text-zinc-400 leading-relaxed">
-                Your 12-word seed phrase is your private master key. It is generated securely on your device, never stored on any server.
+                Your 12-word seed phrase is your private master key. It is generated securely on
+                your device, never stored on any server.
               </p>
             </div>
 
             <div className="space-y-1 pt-3">
               <h4 className="font-medium text-zinc-200">How do I log in?</h4>
               <p className="text-zinc-400 leading-relaxed">
-                Paste your 12 words and click <span className="text-zinc-200">Unlock Wallet</span>. If you are new, click <span className="text-white underline">Generate one</span> to create a fresh vault.
+                Paste your 12 words and click <span className="text-zinc-200">Unlock Wallet</span>.
+                If you are new, click <span className="text-white underline">Generate one</span> to
+                create a fresh vault.
               </p>
             </div>
 
             <div className="space-y-1 pt-3">
               <h4 className="font-medium text-zinc-200">Can I reset my phrase if lost?</h4>
               <p className="text-zinc-400 leading-relaxed">
-                No. Because SidEx is 100% self-custodial, no one can recover a lost phrase. Always write it down on paper and store it offline.
+                No. Because SidEx is 100% self-custodial, no one can recover a lost phrase. Always
+                write it down on paper and store it offline.
               </p>
             </div>
 
             <div className="space-y-1 pt-3">
               <h4 className="font-medium text-zinc-200">Is it Sharia-Compliant?</h4>
               <p className="text-zinc-400 leading-relaxed">
-                Yes. All spot exchanges follow AAOIFI standards (Bay&apos; al-Sarf) with zero interest and live Nisab tracking.
+                Yes. All spot exchanges follow AAOIFI standards (Bay&apos; al-Sarf) with zero
+                interest and live Nisab tracking.
               </p>
             </div>
           </div>
@@ -390,23 +401,28 @@ export function LoginPage({ onLogin }: LoginPageProps) {
 
           <div className="space-y-3.5 pt-1 text-xs divide-y divide-white/5">
             <div className="space-y-1 pt-2 first:pt-0">
-              <h4 className="font-medium text-zinc-200">Bay&apos; al-Sarf (Spot Currency Exchange)</h4>
+              <h4 className="font-medium text-zinc-200">
+                Bay&apos; al-Sarf (Spot Currency Exchange)
+              </h4>
               <p className="text-zinc-400 leading-relaxed">
-                All token swaps execute instantaneously on-chain (Hand-to-Hand / Qabd), eliminating counterparty debt risk and delayed settlement.
+                All token swaps execute instantaneously on-chain (Hand-to-Hand / Qabd), eliminating
+                counterparty debt risk and delayed settlement.
               </p>
             </div>
 
             <div className="space-y-1 pt-3">
               <h4 className="font-medium text-zinc-200">Zero Riba & No Debt Leverage</h4>
               <p className="text-zinc-400 leading-relaxed">
-                SidEx prohibits margin lending, interest-bearing staking schemes, and speculative futures. Only real asset-backed liquidity is supported.
+                SidEx prohibits margin lending, interest-bearing staking schemes, and speculative
+                futures. Only real asset-backed liquidity is supported.
               </p>
             </div>
 
             <div className="space-y-1 pt-3">
               <h4 className="font-medium text-zinc-200">Live Nisab Precious Metals Oracle</h4>
               <p className="text-zinc-400 leading-relaxed">
-                Built-in real-time oracles monitor 85g Gold and 595g Silver benchmarks to automate exact 2.5% Zakat liability calculations.
+                Built-in real-time oracles monitor 85g Gold and 595g Silver benchmarks to automate
+                exact 2.5% Zakat liability calculations.
               </p>
             </div>
           </div>

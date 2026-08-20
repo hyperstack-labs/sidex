@@ -31,7 +31,9 @@ export function useSwap() {
 
   const { writeContractAsync } = useWriteContract();
 
-  const executeSwap = async (params: SwapExecutionParams): Promise<{ success: boolean; hash: string }> => {
+  const executeSwap = async (
+    params: SwapExecutionParams
+  ): Promise<{ success: boolean; hash: string }> => {
     setIsProcessing(true);
 
     try {

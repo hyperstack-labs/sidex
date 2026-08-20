@@ -27,7 +27,6 @@ export function WelcomeBanner({ onClose }: WelcomeBannerProps) {
           className="mb-6"
         >
           <Card className="relative overflow-hidden border border-zinc-800 bg-zinc-900/50">
-
             <CardContent className="relative p-6">
               <button
                 onClick={handleClose}
@@ -43,7 +42,8 @@ export function WelcomeBanner({ onClose }: WelcomeBannerProps) {
                 </div>
 
                 <p className="text-sm text-muted-foreground mb-4">
-                  SidraChain connection established. All compliance modules are active and monitoring real-time transactions.
+                  SidraChain connection established. All compliance modules are active and
+                  monitoring real-time transactions.
                 </p>
 
                 <div className="grid sm:grid-cols-3 gap-4">
@@ -51,9 +51,7 @@ export function WelcomeBanner({ onClose }: WelcomeBannerProps) {
                     <CheckCircle className="w-4 h-4 text-primary mt-1 shrink-0" />
                     <div>
                       <p className="text-sm font-medium">Compliance Verified</p>
-                      <p className="text-xs text-muted-foreground">
-                        AAOIFI Standards Met
-                      </p>
+                      <p className="text-xs text-muted-foreground">AAOIFI Standards Met</p>
                     </div>
                   </div>
 
@@ -61,9 +59,7 @@ export function WelcomeBanner({ onClose }: WelcomeBannerProps) {
                     <Calculator className="w-4 h-4 text-accent mt-1 shrink-0" />
                     <div>
                       <p className="text-sm font-medium">Zakat Calculator</p>
-                      <p className="text-xs text-muted-foreground">
-                        Auto-calculation Active
-                      </p>
+                      <p className="text-xs text-muted-foreground">Auto-calculation Active</p>
                     </div>
                   </div>
 
@@ -71,9 +67,7 @@ export function WelcomeBanner({ onClose }: WelcomeBannerProps) {
                     <TrendingUp className="w-4 h-4 text-emerald-400 mt-1 shrink-0" />
                     <div>
                       <p className="text-sm font-medium">Market Intelligence</p>
-                      <p className="text-xs text-muted-foreground">
-                        Live Data Feed
-                      </p>
+                      <p className="text-xs text-muted-foreground">Live Data Feed</p>
                     </div>
                   </div>
                 </div>

@@ -1,8 +1,5 @@
 import { getDefaultConfig } from "@rainbow-me/rainbowkit";
-import {
-  metaMaskWallet,
-  injectedWallet,
-} from "@rainbow-me/rainbowkit/wallets";
+import { metaMaskWallet, injectedWallet } from "@rainbow-me/rainbowkit/wallets";
 import { type Chain } from "viem";
 
 /**
@@ -32,8 +29,7 @@ export const sidraChain: Chain = {
  */
 export const config = getDefaultConfig({
   appName: "Sidex",
-  projectId:
-    process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "dev-placeholder",
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "dev-placeholder",
   chains: [sidraChain],
   wallets: [
     {
@@ -43,4 +39,3 @@ export const config = getDefaultConfig({
   ],
   ssr: true,
 });
-

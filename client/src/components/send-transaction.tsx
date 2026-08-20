@@ -2,12 +2,19 @@
 
 import { useState } from "react";
 import { motion } from "motion/react";
-import { Send, ArrowLeft, CheckCircle, Loader2, AlertCircle, ExternalLink, ArrowRight } from "lucide-react";
+import {
+  Send,
+  ArrowLeft,
+  CheckCircle,
+  Loader2,
+  AlertCircle,
+  ExternalLink,
+  ArrowRight,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { useAccount, useBalance, useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
 import { isAddress, parseEther, formatEther } from "viem";
 import { toast } from "sonner";
@@ -126,7 +133,10 @@ export function SendTransaction({ onBack }: SendTransactionProps) {
             </div>
           </Card>
 
-          <Button onClick={onBack} className="w-full bg-[#01AACA] hover:bg-[#01AACA]/90 text-white font-semibold">
+          <Button
+            onClick={onBack}
+            className="w-full bg-[#01AACA] hover:bg-[#01AACA]/90 text-white font-semibold"
+          >
             Return to Portfolio
           </Button>
         </motion.div>
@@ -137,14 +147,21 @@ export function SendTransaction({ onBack }: SendTransactionProps) {
   if (isConfirming) {
     return (
       <div className="space-y-6 pb-12 max-w-lg mx-auto">
-        <Button variant="ghost" size="sm" onClick={() => setIsConfirming(false)} className="text-xs text-zinc-400 hover:text-white">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsConfirming(false)}
+          className="text-xs text-zinc-400 hover:text-white"
+        >
           <ArrowLeft className="w-3.5 h-3.5 mr-1" />
           Edit Transfer
         </Button>
 
         <Card className="border border-zinc-800 bg-zinc-950/70 shadow-sm rounded-xl">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base font-semibold text-white">Review & Sign Transfer</CardTitle>
+            <CardTitle className="text-base font-semibold text-white">
+              Review & Sign Transfer
+            </CardTitle>
             <CardDescription className="text-xs text-zinc-400">
               Verify recipient address and amount before signing with your connected wallet.
             </CardDescription>
@@ -205,7 +222,12 @@ export function SendTransaction({ onBack }: SendTransactionProps) {
 
   return (
     <div className="space-y-6 pb-12 max-w-lg mx-auto">
-      <Button variant="ghost" size="sm" onClick={onBack} className="text-xs text-zinc-400 hover:text-white">
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={onBack}
+        className="text-xs text-zinc-400 hover:text-white"
+      >
         <ArrowLeft className="w-3.5 h-3.5 mr-1" />
         Back to Dashboard
       </Button>
@@ -235,7 +257,9 @@ export function SendTransaction({ onBack }: SendTransactionProps) {
                 }`}
               />
               {recipient && !isValidRecipient && (
-                <p className="text-[11px] text-red-400">Please enter a valid 0x Ethereum/SidraChain address.</p>
+                <p className="text-[11px] text-red-400">
+                  Please enter a valid 0x Ethereum/SidraChain address.
+                </p>
               )}
             </div>
 

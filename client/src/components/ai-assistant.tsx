@@ -9,14 +9,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { quickActions, useAIAssistant } from "@/components/ai/use-ai-assistant";
 
 export function AIAssistant() {
-  const {
-    messages,
-    inputValue,
-    setInputValue,
-    isTyping,
-    handleQuickAction,
-    handleSendMessage,
-  } = useAIAssistant();
+  const { messages, inputValue, setInputValue, isTyping, handleQuickAction, handleSendMessage } =
+    useAIAssistant();
 
   return (
     <div className="space-y-6 pb-8">
@@ -42,9 +36,7 @@ export function AIAssistant() {
               </div>
               <div>
                 <CardTitle>SidEx Intelligence</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Predictive Financial Modeling
-                </p>
+                <p className="text-sm text-muted-foreground">Predictive Financial Modeling</p>
               </div>
             </div>
           </CardHeader>
@@ -88,14 +80,14 @@ export function AIAssistant() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className={`flex ${message.type === "user" ? "justify-end" : "justify-start"
-                      }`}
+                    className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[80%] rounded-lg p-3 ${message.type === "user"
+                      className={`max-w-[80%] rounded-lg p-3 ${
+                        message.type === "user"
                           ? "bg-primary text-primary-foreground"
                           : "bg-muted text-foreground border border-border"
-                        }`}
+                      }`}
                     >
                       <p className="text-sm whitespace-pre-line">{message.content}</p>
                       <p className="text-xs opacity-60 mt-1">
@@ -173,8 +165,8 @@ export function AIAssistant() {
             <div>
               <p className="font-medium text-emerald-400">Portfolio is Sharia-Compliant</p>
               <p className="text-sm text-muted-foreground mt-1">
-                All assets have been verified against AAOIFI standards. Last checked: Today
-                at 2:30 PM
+                All assets have been verified against AAOIFI standards. Last checked: Today at 2:30
+                PM
               </p>
             </div>
           </div>

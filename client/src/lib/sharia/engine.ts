@@ -107,9 +107,12 @@ export function auditTokenShariaCompliance(financials: TokenFinancials): ShariaA
   // Calculate normalized compliance score (0-100)
   let score = 100;
   if (!financials.primaryActivityCompliant) score -= 50;
-  if (debtRatio > MAX_DEBT_RATIO_PERCENT) score -= Math.min(25, (debtRatio - MAX_DEBT_RATIO_PERCENT) * 2);
-  if (cashRatio > MAX_CASH_RATIO_PERCENT) score -= Math.min(25, (cashRatio - MAX_CASH_RATIO_PERCENT) * 2);
-  if (impermissibleRevRatio > MAX_IMPERMISSIBLE_REVENUE_PERCENT) score -= Math.min(20, impermissibleRevRatio * 2);
+  if (debtRatio > MAX_DEBT_RATIO_PERCENT)
+    score -= Math.min(25, (debtRatio - MAX_DEBT_RATIO_PERCENT) * 2);
+  if (cashRatio > MAX_CASH_RATIO_PERCENT)
+    score -= Math.min(25, (cashRatio - MAX_CASH_RATIO_PERCENT) * 2);
+  if (impermissibleRevRatio > MAX_IMPERMISSIBLE_REVENUE_PERCENT)
+    score -= Math.min(20, impermissibleRevRatio * 2);
 
   return {
     compliant: isCompliant,

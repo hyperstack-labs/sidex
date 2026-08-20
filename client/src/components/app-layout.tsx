@@ -356,48 +356,39 @@ export function AppLayout({ children }: AppLayoutProps) {
           </motion.div>
         </main>
 
-        {/* Sleek Minimalist Footer - Pinned to Viewport Bottom */}
-        <footer className="border-t border-white/5 py-6 mt-auto bg-black/40 backdrop-blur-md w-full">
-          <div className="w-full max-w-[1600px] mx-auto px-6 md:px-12 lg:px-16">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-zinc-500">
-              {/* Left: Brand & Network */}
-              <div className="flex items-center gap-2.5">
-                <span className="text-zinc-400 font-medium">© 2026 SidEx Protocol</span>
-                <span>•</span>
-                <span>Built on Sidra Chain</span>
-              </div>
+        {/* Full-Width Clean Modern Footer */}
+        <footer className="w-full border-t border-white/5 py-5 mt-auto bg-black/40 backdrop-blur-md">
+          <div className="w-full px-6 sm:px-10 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-zinc-500">
+            {/* Left: Clean Copyright */}
+            <div className="flex items-center gap-2 text-zinc-400">
+              <span>© 2026 SidEx</span>
+            </div>
 
-              {/* Center: AAOIFI Sharia Badge - Pure Typography, No Circular Dot */}
-              <div className="hidden lg:flex items-center text-[11px] text-zinc-400">
-                <span>AAOIFI Standard No. 21 / 59 Compliant</span>
-              </div>
-
-              {/* Right: Legal & Explorer Links */}
-              <div className="flex items-center gap-5">
-                <button
-                  type="button"
-                  onClick={() => onOpenLegal("tos")}
-                  className="hover:text-zinc-200 transition-colors cursor-pointer"
-                >
-                  Terms of Service
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onOpenLegal("privacy")}
-                  className="hover:text-zinc-200 transition-colors cursor-pointer"
-                >
-                  Privacy Policy
-                </button>
-                <a
-                  href="https://ledger.sidrachain.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-zinc-200 transition-colors flex items-center gap-1"
-                >
-                  <span>Explorer</span>
-                  <span className="text-[10px]">↗</span>
-                </a>
-              </div>
+            {/* Right: Clean Links */}
+            <div className="flex items-center gap-5">
+              <button
+                type="button"
+                onClick={() => onOpenLegal("tos")}
+                className="hover:text-zinc-200 transition-colors cursor-pointer"
+              >
+                Terms
+              </button>
+              <button
+                type="button"
+                onClick={() => onOpenLegal("privacy")}
+                className="hover:text-zinc-200 transition-colors cursor-pointer"
+              >
+                Privacy
+              </button>
+              <a
+                href="https://ledger.sidrachain.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-zinc-200 transition-colors flex items-center gap-1"
+              >
+                <span>Explorer</span>
+                <span className="text-[10px]">↗</span>
+              </a>
             </div>
           </div>
         </footer>

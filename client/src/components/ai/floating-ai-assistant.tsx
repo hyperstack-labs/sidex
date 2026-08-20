@@ -2,15 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { MessageCircle, Send, X } from "lucide-react";
+import { X, ArrowUpRight, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useAIAssistant, quickActions } from "@/components/ai/use-ai-assistant";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
+/**
+ * Minimalist Sharia AI Copilot.
+ * Ultra-clean typography, zero redundant icons or badge containers, matching Gotrade/Linear design.
+ */
 export function FloatingAIAssistant() {
   const [open, setOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -19,116 +21,111 @@ export function FloatingAIAssistant() {
   const { messages, inputValue, setInputValue, isTyping, handleQuickAction, handleSendMessage } =
     useAIAssistant();
 
+  // Global ⌘K / Ctrl+K shortcut
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   useEffect(() => {
     if (!open) return;
     const t = setTimeout(() => {
       inputRef.current?.focus();
-    }, 50);
+    }, 80);
     return () => clearTimeout(t);
   }, [open]);
 
   return (
-    <div className="fixed bottom-5 right-5 z-50" role="group" aria-label="AI assistant">
+    <div className="fixed bottom-20 right-6 sm:right-10 z-40">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button
+          <button
             type="button"
-            aria-label="Open AI assistant"
-            variant="default"
-            size="icon"
-            className="relative size-12 rounded-full bg-accent text-accent-foreground shadow-lg shadow-accent/20 ring-1 ring-accent/30 transition-transform hover:bg-accent/90 hover:scale-[1.03] animate-pulse-glow"
+            aria-label="Open AI Assistant"
+            className="group flex items-center gap-2.5 bg-transparent border-0 shadow-none text-zinc-400 hover:text-white transition-colors cursor-pointer outline-none p-1 select-none"
           >
-            <MessageCircle aria-hidden="true" className="size-5" />
-            <span className="sr-only">Open AI assistant</span>
-            <span className="pointer-events-none absolute -top-0.5 -right-0.5 size-3 rounded-full bg-primary ring-2 ring-background" />
-          </Button>
+            <span className="text-base font-semibold tracking-tight">Ask AI</span>
+            <span className="text-xs font-mono text-zinc-600 group-hover:text-zinc-400 transition-colors">
+              ⌘K
+            </span>
+          </button>
         </PopoverTrigger>
 
         <PopoverContent
           align="end"
           side="top"
-          sideOffset={12}
-          className="w-[min(420px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-border bg-card/70 p-0 shadow-2xl backdrop-blur-xl"
+          sideOffset={14}
+          className="w-[min(420px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/95 p-0 shadow-2xl backdrop-blur-3xl"
         >
-          <div className="flex h-[min(560px,calc(100vh-8rem))] min-h-0 flex-col">
-            <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="flex size-10 items-center justify-center rounded-full bg-accent/15 ring-1 ring-accent/25">
-                    <MessageCircle aria-hidden="true" className="size-5 text-accent" />
-                  </div>
-                  <div className="absolute -bottom-0.5 -right-0.5 size-3 rounded-full bg-accent ring-2 ring-background" />
-                </div>
+          <div className="flex h-[min(500px,calc(100vh-10rem))] min-h-0 flex-col">
+            {/* Header: Pure Minimalist Typography */}
+            <div className="flex items-center justify-between border-b border-white/5 px-4 py-3 bg-zinc-950">
+              <span className="text-sm font-semibold text-white tracking-tight">SidEx AI</span>
 
-                <div className="leading-tight">
-                  <div className="text-sm font-semibold">SidEx Intelligence</div>
-                  <div className="text-xs text-muted-foreground">AI Assistant</div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-1">
-                <Button
+              <div className="flex items-center gap-2">
+                <button
                   type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 px-2 text-xs"
                   onClick={() => {
                     setOpen(false);
                     router.push("/ai");
                   }}
+                  className="flex items-center gap-0.5 text-xs text-zinc-400 hover:text-white transition-colors cursor-pointer font-mono"
                 >
-                  Open
-                </Button>
-                <Button
+                  <span>Full View</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </button>
+                <button
                   type="button"
                   aria-label="Close"
-                  variant="ghost"
-                  size="icon"
-                  className="size-8"
                   onClick={() => setOpen(false)}
+                  className="p-1 text-zinc-500 hover:text-white transition-colors cursor-pointer"
                 >
-                  <X aria-hidden="true" className="size-4" />
-                </Button>
+                  <X className="w-4 h-4" />
+                </button>
               </div>
             </div>
 
-            <div className="flex shrink-0 gap-2 overflow-x-auto px-4 py-2">
+            {/* Quick Prompts: Clean Text Pills */}
+            <div className="flex shrink-0 gap-1.5 overflow-x-auto px-4 py-2.5 border-b border-white/5 bg-zinc-900/30 scrollbar-none">
               {quickActions.map((action) => (
-                <Button
+                <button
                   key={action.action}
                   type="button"
-                  variant="outline"
-                  size="sm"
-                  className="h-8 shrink-0 gap-2 border-primary/15 bg-background/40"
                   onClick={() => handleQuickAction(action.action)}
-                  aria-label={action.label}
+                  className="px-3 py-1 rounded-full border border-white/10 hover:border-white/20 bg-zinc-900/60 hover:bg-zinc-800 text-zinc-300 hover:text-white text-xs font-medium shrink-0 transition-all cursor-pointer"
                 >
-                  <action.icon aria-hidden="true" className="size-4 text-primary" />
-                  <span className="text-xs">{action.label}</span>
-                </Button>
+                  {action.label}
+                </button>
               ))}
             </div>
 
+            {/* Messages Feed */}
             <ScrollArea className="min-h-0 flex-1 px-4">
               <div className="space-y-3 py-3">
                 <AnimatePresence>
                   {messages.map((message) => (
                     <motion.div
                       key={message.id}
-                      initial={{ opacity: 0, y: 8 }}
+                      initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
+                      exit={{ opacity: 0, y: -4 }}
                       className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
                     >
                       <div
-                        className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
+                        className={`max-w-[85%] rounded-xl px-3.5 py-2 text-xs leading-relaxed ${
                           message.type === "user"
-                            ? "bg-primary text-primary-foreground"
-                            : "border border-border bg-muted/60 text-foreground"
+                            ? "bg-white text-zinc-950 font-medium"
+                            : "border border-white/5 bg-zinc-900/70 text-zinc-200"
                         }`}
                       >
                         <div className="whitespace-pre-line">{message.content}</div>
-                        <div className="mt-1 text-[11px] opacity-60">
+                        <div className="mt-1 text-[10px] font-mono opacity-40 text-right">
                           {message.timestamp.toLocaleTimeString([], {
                             hour: "2-digit",
                             minute: "2-digit",
@@ -145,52 +142,34 @@ export function FloatingAIAssistant() {
                     animate={{ opacity: 1 }}
                     className="flex justify-start"
                   >
-                    <div className="rounded-2xl border border-border bg-muted/60 px-3 py-2">
-                      <div className="flex gap-1">
-                        <motion.div
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 0.6, repeat: Infinity }}
-                          className="size-2 rounded-full bg-primary"
-                        />
-                        <motion.div
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
-                          className="size-2 rounded-full bg-primary"
-                        />
-                        <motion.div
-                          animate={{ scale: [1, 1.2, 1] }}
-                          transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
-                          className="size-2 rounded-full bg-primary"
-                        />
-                      </div>
+                    <div className="rounded-xl border border-white/5 bg-zinc-900/70 px-3 py-2 text-xs text-zinc-500 font-mono">
+                      Thinking…
                     </div>
                   </motion.div>
                 )}
               </div>
             </ScrollArea>
 
-            <div className="shrink-0 border-t border-border bg-background/40 p-3">
-              <div className="flex gap-2">
-                <Input
+            {/* Input Bar */}
+            <div className="shrink-0 border-t border-white/5 bg-zinc-950 p-3">
+              <div className="flex items-center gap-2 rounded-xl bg-zinc-900 border border-white/10 px-3 py-2 focus-within:border-white/20 transition-colors">
+                <input
                   ref={inputRef}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
-                  placeholder="Ask anything…"
-                  className="h-10 bg-input border-primary/15 focus:border-primary"
+                  placeholder="Ask a question..."
+                  className="w-full bg-transparent text-xs text-white placeholder:text-zinc-500 outline-none"
                 />
-                <Button
+                <button
                   type="button"
                   aria-label="Send message"
                   onClick={handleSendMessage}
                   disabled={!inputValue.trim()}
-                  className="h-10 px-3"
+                  className="p-1 text-zinc-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors cursor-pointer"
                 >
-                  <Send aria-hidden="true" className="size-4" />
-                </Button>
-              </div>
-              <div className="mt-2 text-xs text-muted-foreground">
-                AI responses are for guidance only.
+                  <Send className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
           </div>

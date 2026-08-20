@@ -75,7 +75,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   };
 
   return (
-    <div className="min-h-screen bg-background relative">
+    <div className="min-h-screen bg-background relative flex flex-col justify-between">
       <AmbientBackground />
       {/* Header */}
       <header
@@ -306,38 +306,60 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container max-w-6xl mx-auto px-4 sm:px-8 py-6">
+      {/* Main Content - Balanced Luxury Viewport */}
+      <main className="w-full max-w-6xl mx-auto px-6 sm:px-8 py-6 flex-1 flex flex-col">
         <motion.div
           key={pathname}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
+          className="flex-1 flex flex-col w-full"
         >
           {children}
         </motion.div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-white/5 py-8 mt-16">
-        <div className="container max-w-6xl mx-auto px-4 sm:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-muted-foreground text-center sm:text-left">
-              © 2026 SidEx. All rights reserved.
-            </p>
-            <div className="flex gap-4">
+      {/* Sleek Minimalist Footer - Pinned to Viewport Bottom */}
+      <footer className="border-t border-white/5 py-6 mt-auto bg-black/40 backdrop-blur-md w-full">
+        <div className="w-full max-w-6xl mx-auto px-6 sm:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-zinc-500">
+            {/* Left: Brand & Network */}
+            <div className="flex items-center gap-2.5">
+              <span className="text-zinc-400 font-medium">© 2026 SidEx Protocol</span>
+              <span>•</span>
+              <span>Built on Sidra Chain</span>
+            </div>
+
+            {/* Center: AAOIFI Sharia Badge - Pure Typography, No Circular Dot */}
+            <div className="hidden lg:flex items-center text-[11px] text-zinc-400">
+              <span>AAOIFI Standard No. 21 / 59 Compliant</span>
+            </div>
+
+            {/* Right: Legal & Explorer Links */}
+            <div className="flex items-center gap-5">
               <button
+                type="button"
                 onClick={() => onOpenLegal("tos")}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                className="hover:text-zinc-200 transition-colors cursor-pointer"
               >
                 Terms of Service
               </button>
               <button
+                type="button"
                 onClick={() => onOpenLegal("privacy")}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                className="hover:text-zinc-200 transition-colors cursor-pointer"
               >
                 Privacy Policy
               </button>
+              <a
+                href="https://ledger.sidrachain.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-zinc-200 transition-colors flex items-center gap-1"
+              >
+                <span>Explorer</span>
+                <span className="text-[10px]">↗</span>
+              </a>
             </div>
           </div>
         </div>

@@ -6,13 +6,11 @@ import {
   TrendingUp,
   ArrowUpRight,
   ArrowDownRight,
-  Shield,
   Send,
   ArrowLeftRight,
   Plus,
   Eye,
   EyeOff,
-  ChevronDown,
   ExternalLink,
 } from "lucide-react";
 import Image from "next/image";
@@ -72,15 +70,6 @@ const chartDataByTimeframe: Record<Timeframe, { time: string; value: number }[]>
   ],
 };
 
-const tickerItems = [
-  { symbol: "SDA", name: "Sidra Chain", price: "$12.19", change: "+12.5%", isPositive: true },
-  { symbol: "ISLM", name: "Haqq Network", price: "$0.48", change: "+4.2%", isPositive: true },
-  { symbol: "XAU", name: "Sharia Gold (g)", price: "$84.20", change: "+1.8%", isPositive: true },
-  { symbol: "BTC", name: "Bitcoin", price: "$98,450.00", change: "+2.4%", isPositive: true },
-  { symbol: "ETH", name: "Ethereum", price: "$3,420.00", change: "+3.1%", isPositive: true },
-  { symbol: "USDT", name: "Tether USD", price: "$1.00", change: "0.0%", isPositive: true },
-];
-
 const tokens = [
   {
     name: "Sidra Chain",
@@ -90,30 +79,27 @@ const tokens = [
     value: "$125,000.00",
     change: "+12.5%",
     isPositive: true,
-    halalStatus: "AAOIFI Certified",
     image: "/sidra-chain-removebg-preview.png",
   },
   {
-    name: "Ethereum",
-    symbol: "ETH",
-    balance: "4.60",
-    price: "$3,420.00",
-    value: "$15,750.00",
-    change: "+8.2%",
+    name: "Sidra Gold",
+    symbol: "sGOLD",
+    balance: "237.50 g",
+    price: "$84.20/g",
+    value: "$20,000.00",
+    change: "+1.8%",
     isPositive: true,
-    halalStatus: "Spot Asset",
-    image: "/ethereum-removebg-preview.png",
+    image: "/sidex.png",
   },
   {
-    name: "Bitcoin",
-    symbol: "BTC",
-    balance: "0.094",
-    price: "$98,450.00",
-    value: "$9,250.00",
-    change: "-1.8%",
-    isPositive: false,
-    halalStatus: "Spot Asset",
-    image: "/bitcoin.png",
+    name: "Sidra USD",
+    symbol: "sUSD",
+    balance: "5,000.00",
+    price: "$1.00",
+    value: "$5,000.00",
+    change: "0.0%",
+    isPositive: true,
+    image: "/icon.png",
   },
 ];
 
@@ -123,25 +109,22 @@ const recentTransactions = [
     token: "SDA",
     amount: "+500.00 SDA",
     usd: "+$6,095.00",
-    from: "0x742d...3a8f",
     time: "2 hours ago",
     isPositive: true,
   },
   {
     type: "Swap",
-    token: "SDA → ETH",
+    token: "SDA → sGOLD",
     amount: "1,000 SDA",
     usd: "$12,190.00",
-    from: "SidEx AMM Router",
     time: "Yesterday",
     isPositive: null,
   },
   {
     type: "Sent",
-    token: "ETH",
-    amount: "-0.50 ETH",
-    usd: "-$1,710.00",
-    from: "0x3f2a...9c1d",
+    token: "sUSD",
+    amount: "-500.00 sUSD",
+    usd: "-$500.00",
     time: "3 days ago",
     isPositive: false,
   },
@@ -152,12 +135,10 @@ interface DashboardProps {
 }
 
 /**
- * Modern High-Performance Institutional Dashboard for SidEx.
- * Inspired by Gotrade Ultra with full-bleed unboxed charts, live ticker ribbon,
- * bold financial typography, and zero box-in-a-box clutter.
+ * Clean, uncluttered, full-width production dashboard for SidEx.
  *
- * @param props - Component props containing navigation callback.
- * @returns Dashboard interactive view.
+ * @param props - Component navigation callback props.
+ * @returns Clean dashboard view.
  */
 export function Dashboard({ onNavigate }: DashboardProps) {
   const [showValue, setShowValue] = useState(true);
@@ -166,7 +147,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
 
   const currentData = chartDataByTimeframe[activeTimeframe];
 
-  // Dynamic Live Financial Scrubbing (Gotrade / Robinhood pattern)
+  // Dynamic Live Balance on Hover
   const baseValue = currentData[0]?.value || 145000;
   const displayValue = hoveredPoint ? hoveredPoint.value : 150000;
   const diff = displayValue - baseValue;
@@ -175,47 +156,14 @@ export function Dashboard({ onNavigate }: DashboardProps) {
   const timeframeLabel = hoveredPoint ? hoveredPoint.time : "All time";
 
   return (
-    <div className="space-y-8 pb-12">
-      {/* 1. Gotrade-Style Live Ticker Ribbon */}
-      <div className="flex items-center gap-4 py-2 overflow-x-auto no-scrollbar border-b border-white/5 -mt-2">
-        <button
-          type="button"
-          className="flex items-center gap-1.5 px-3 py-1 rounded-full border border-white/10 bg-zinc-900/60 text-xs font-medium text-zinc-300 hover:text-white shrink-0 cursor-pointer"
-        >
-          <span>My holdings</span>
-          <ChevronDown className="w-3.5 h-3.5 opacity-70" />
-        </button>
+    <div className="w-full space-y-10 pb-16">
+      {/* 1. Hero Balance (Clean Minimalist Typography) */}
+      <section className="space-y-2 pt-2">
+        <span className="text-sm font-medium text-zinc-400">
+          Portfolio
+        </span>
 
-        <div className="flex items-center gap-5 sm:gap-7 text-xs font-mono shrink-0">
-          {tickerItems.map((item) => (
-            <div key={item.symbol} className="flex items-center gap-2">
-              <span className="text-zinc-400 font-semibold">{item.symbol}</span>
-              <span className="text-zinc-200">{item.price}</span>
-              <span
-                className={`flex items-center text-[11px] ${
-                  item.isPositive ? "text-emerald-400" : "text-red-400"
-                }`}
-              >
-                {item.change}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 2. Hero Portfolio Value Section (Gotrade Dynamic Scrubbing Header) */}
-      <section className="space-y-3 pt-2">
-        <div className="flex items-center gap-3">
-          <span className="text-xs sm:text-sm text-zinc-400 font-medium">
-            Total in SidEx
-          </span>
-          <div className="flex items-center gap-1 text-[11px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
-            <Shield className="w-3 h-3" />
-            <span>Halal Certified</span>
-          </div>
-        </div>
-
-        {/* Large Bold Dynamic Balance */}
+        {/* Large Clean Balance */}
         <div className="flex items-baseline gap-4">
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white font-mono">
             {showValue
@@ -235,7 +183,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           </button>
         </div>
 
-        {/* Dynamic PnL Metric that updates live with mouse hover */}
+        {/* Dynamic PnL */}
         <div
           className={`flex items-center gap-2 text-sm sm:text-base font-semibold ${
             isGain ? "text-emerald-400" : "text-red-400"
@@ -261,10 +209,9 @@ export function Dashboard({ onNavigate }: DashboardProps) {
         </div>
       </section>
 
-      {/* 3. Full-Bleed Unboxed Interactive Chart (Gotrade Ultra Style) */}
+      {/* 2. Full-Width Unboxed Chart */}
       <section className="space-y-4">
-        {/* The Chart - Live Mouse Scrubbing, NO Box Container */}
-        <div className="h-64 sm:h-72 w-full relative">
+        <div className="h-72 sm:h-80 w-full relative">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
               data={currentData}
@@ -279,9 +226,9 @@ export function Dashboard({ onNavigate }: DashboardProps) {
               onMouseLeave={() => setHoveredPoint(null)}
             >
               <defs>
-                <linearGradient id="gotradeGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#10b981" stopOpacity={0.35} />
-                  <stop offset="60%" stopColor="#01AACA" stopOpacity={0.1} />
+                <linearGradient id="sidexGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#01AACA" stopOpacity={0.3} />
+                  <stop offset="60%" stopColor="#10b981" stopOpacity={0.08} />
                   <stop offset="100%" stopColor="#000000" stopOpacity={0} />
                 </linearGradient>
               </defs>
@@ -290,19 +237,19 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                 dataKey="time"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#71717a", fontSize: 11, fontFamily: "monospace" }}
+                tick={{ fill: "#71717a", fontSize: 12, fontFamily: "monospace" }}
               />
               <YAxis
                 orientation="right"
                 axisLine={false}
                 tickLine={false}
                 domain={["dataMin - 2000", "dataMax + 2000"]}
-                tick={{ fill: "#71717a", fontSize: 11, fontFamily: "monospace" }}
-                tickFormatter={(val) => `$${(val / 1000).toFixed(1)}k`}
+                tick={{ fill: "#71717a", fontSize: 12, fontFamily: "monospace" }}
+                tickFormatter={(val) => `$${(val / 1000).toFixed(0)}k`}
               />
               <Tooltip
                 cursor={{
-                  stroke: "rgba(255, 255, 255, 0.4)",
+                  stroke: "rgba(255, 255, 255, 0.3)",
                   strokeWidth: 1,
                   strokeDasharray: "3 3",
                 }}
@@ -311,18 +258,23 @@ export function Dashboard({ onNavigate }: DashboardProps) {
               <Area
                 type="monotone"
                 dataKey="value"
-                stroke="#10b981"
+                stroke="#01AACA"
                 strokeWidth={2.5}
-                fill="url(#gotradeGradient)"
+                fill="url(#sidexGradient)"
                 dot={false}
-                activeDot={{ r: 5, fill: "#10b981", stroke: "#000000", strokeWidth: 2 }}
+                activeDot={{
+                  r: 5,
+                  fill: "#01AACA",
+                  stroke: "#000000",
+                  strokeWidth: 2,
+                }}
               />
             </AreaChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Timeframe Selector Pills */}
-        <div className="flex items-center gap-1.5 pt-1">
+        {/* Timeframe Selector */}
+        <div className="flex items-center gap-2 pt-1">
           {timeframes.map((tf) => (
             <button
               key={tf}
@@ -340,7 +292,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
         </div>
       </section>
 
-      {/* 4. Action Strip (Clean Minimalist Action Buttons) */}
+      {/* 3. Action Buttons */}
       <section className="grid grid-cols-3 gap-3 pt-2">
         <Button
           onClick={() => onNavigate("send")}
@@ -365,23 +317,21 @@ export function Dashboard({ onNavigate }: DashboardProps) {
         </Button>
       </section>
 
-      {/* 5. Positions / Holdings Table (Flat Editorial List - Zero Box-in-a-Box) */}
+      {/* 4. Assets List (Flat Minimalist Table) */}
       <section className="space-y-4 pt-4">
-        <div className="flex items-center justify-between border-b border-white/5 pb-3">
-          <h2 className="text-lg font-bold text-white tracking-tight">Your Positions</h2>
-          <span className="text-xs font-mono text-zinc-500">Sidra Chain L1</span>
+        <div className="border-b border-white/5 pb-3">
+          <h2 className="text-lg font-bold text-white tracking-tight">Assets</h2>
         </div>
 
         <div className="divide-y divide-white/5">
           {tokens.map((token) => (
             <motion.div
               key={token.symbol}
-              whileHover={{ x: 3 }}
+              whileHover={{ x: 4 }}
               transition={{ duration: 0.15 }}
               className="flex items-center justify-between py-4 px-2 hover:bg-white/[0.02] rounded-xl transition-colors cursor-pointer"
               onClick={() => onNavigate("swap")}
             >
-              {/* Left: Token Icon + Name */}
               <div className="flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-full border border-white/10 bg-zinc-900 flex items-center justify-center p-1.5 overflow-hidden">
                   <Image
@@ -393,13 +343,8 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                   />
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-white text-sm sm:text-base">
-                      {token.name}
-                    </span>
-                    <span className="text-[10px] font-mono text-zinc-400 border border-white/10 px-1.5 py-0.2 rounded">
-                      {token.halalStatus}
-                    </span>
+                  <div className="font-semibold text-white text-sm sm:text-base">
+                    {token.name}
                   </div>
                   <span className="text-xs font-mono text-zinc-400">
                     {token.balance} {token.symbol} • {token.price}
@@ -407,7 +352,6 @@ export function Dashboard({ onNavigate }: DashboardProps) {
                 </div>
               </div>
 
-              {/* Right: Value + 24h PnL */}
               <div className="text-right">
                 <p className="font-semibold text-white text-sm sm:text-base font-mono">
                   {token.value}
@@ -430,7 +374,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
         </div>
       </section>
 
-      {/* 6. Recent Activity (Flat Editorial List) */}
+      {/* 5. Recent Activity */}
       <section className="space-y-4 pt-4">
         <div className="flex items-center justify-between border-b border-white/5 pb-3">
           <h2 className="text-lg font-bold text-white tracking-tight">Recent Activity</h2>
@@ -451,24 +395,11 @@ export function Dashboard({ onNavigate }: DashboardProps) {
               key={idx}
               className="flex items-center justify-between py-3.5 px-2 hover:bg-white/[0.02] rounded-xl transition-colors"
             >
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full border border-white/10 bg-zinc-900/80 flex items-center justify-center text-zinc-400">
-                  {tx.isPositive === true ? (
-                    <ArrowDownRight className="w-4 h-4 text-emerald-400" />
-                  ) : tx.isPositive === false ? (
-                    <ArrowUpRight className="w-4 h-4 text-red-400" />
-                  ) : (
-                    <ArrowLeftRight className="w-4 h-4 text-[#01AACA]" />
-                  )}
-                </div>
-                <div>
-                  <p className="font-semibold text-white text-xs sm:text-sm">
-                    {tx.type} {tx.token}
-                  </p>
-                  <p className="text-[11px] font-mono text-zinc-500">
-                    {tx.from} • {tx.time}
-                  </p>
-                </div>
+              <div>
+                <p className="font-semibold text-white text-xs sm:text-sm">
+                  {tx.type} {tx.token}
+                </p>
+                <p className="text-[11px] font-mono text-zinc-500">{tx.time}</p>
               </div>
 
               <div className="text-right font-mono">

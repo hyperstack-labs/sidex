@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useAccount, useWriteContract } from "wagmi";
+import { useState, useEffect } from "react";
+import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { useEnvMode } from "./use-env-mode";
 import { CONTRACT_ADDRESSES, SIDEX_ROUTER_ABI } from "@/config/contracts";
 import { parseUnits, type Address } from "viem";
@@ -28,9 +28,21 @@ export function useSwap() {
   const { isMockMode } = useEnvMode();
   const { address } = useAccount();
   const [isProcessing, setIsProcessing] = useState(false);
-  const [txHash, setTxHash] = useState<string | null>(null);
+  const [txHash, setTxHash] = useState<`0x${string}` | undefined>(undefined);
 
   const { writeContractAsync } = useWriteContract();
+
+  // Reactive receipt wait, per ticket spec (useWaitForTransactionReceipt).
+  // Only relevant in Live Mode — txHash stays undefined in Mock Mode so
+  // this hook simply sits idle there.
+  const {
+    isLoading: isConfirming,
+    isSuccess: isConfirmed,
+    isError: isReceiptError,
+  } = useWaitForTransactionReceipt({
+    hash: txHash,
+    query: { enabled: !isMockMode && Boolean(txHash) },
+  });
 
   const executeSwap = async (
     params: SwapExecutionParams
@@ -40,6 +52,7 @@ export function useSwap() {
     try {
       if (isMockMode || !address) {
         // Simulated Demo Mode Execution
+        toast.loading("Simulating swap…", { id: "swap-demo" });
         await new Promise((resolve) => setTimeout(resolve, 1200));
 
         const fromVal = parseFloat(params.fromAmount) || 0;
@@ -56,10 +69,11 @@ export function useSwap() {
 
         const mockHash = `0x${Array.from({ length: 64 }, () =>
           Math.floor(Math.random() * 16).toString(16)
-        ).join("")}`;
+        ).join("")}` as `0x${string}`;
 
         setTxHash(mockHash);
         setIsProcessing(false);
+        toast.success("Swap Executed", { id: "swap-demo" });
         return { success: true, hash: mockHash };
       }
 
@@ -85,18 +99,46 @@ export function useSwap() {
 
       setTxHash(hash);
       setIsProcessing(false);
+      toast.loading("Broadcasting to Sidra Chain...", {
+        id: hash,
+        description: "Waiting for on-chain confirmation",
+      });
+      // Success/error toast fires from the effect below once
+      // useWaitForTransactionReceipt actually resolves — broadcasting
+      // isn't the same as being mined, so the pending toast stays up
+      // until then.
       return { success: true, hash };
     } catch (error) {
       setIsProcessing(false);
       const errorMessage = error instanceof Error ? error.message : "Swap transaction failed";
-      toast.error("Swap Failed", { description: errorMessage });
+      toast.error("Swap Failed", { description: errorMessage, id: txHash ?? "swap-error" });
       throw error;
     }
   };
 
+  // Fires the definitive success/error toast once the on-chain receipt
+  // resolves (Live Mode only — Mock Mode already toasts success
+  // synchronously above, since there's no real receipt to wait for).
+  useEffect(() => {
+    if (!txHash || isMockMode) return;
+    if (isConfirmed) {
+      toast.success("Swap Confirmed", {
+        id: txHash,
+        description: "Transaction confirmed on-chain",
+      });
+    } else if (isReceiptError) {
+      toast.error("Swap Failed", {
+        id: txHash,
+        description: "Transaction reverted on-chain",
+      });
+    }
+  }, [isConfirmed, isReceiptError, txHash, isMockMode]);
+
   return {
     executeSwap,
-    isProcessing,
+    isProcessing: isProcessing || isConfirming,
+    isConfirming,
+    isConfirmed,
     txHash,
     isMockMode,
   };

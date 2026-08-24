@@ -27,7 +27,7 @@ interface SwapTransactionProps {
  */
 export function SwapTransaction({ onBack }: SwapTransactionProps) {
   const { tokens: availableTokens } = useTokens();
-  const { executeSwap, isProcessing, txHash } = useSwap();
+  const { executeSwap, isProcessing, txHash, isMockMode } = useSwap();
 
   const [fromSymbol, setFromSymbol] = useState<string>("SDA");
   const [toSymbol, setToSymbol] = useState<string>("sGOLD");
@@ -80,11 +80,15 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
         toTokenSymbol: toToken.symbol,
         fromAmount,
         toAmount,
+        fromTokenAddress: fromToken.address as `0x${string}` | undefined,
+        toTokenAddress: toToken.address as `0x${string}` | undefined,
       });
       setIsComplete(true);
-      toast.success("Swap Executed", {
-        description: `Swapped ${fromAmount} ${fromToken.symbol} for ${toAmount} ${toToken.symbol}`,
-      });
+      if (isMockMode) {
+        toast.success("Swap Executed", {
+          description: `Swapped ${fromAmount} ${fromToken.symbol} for ${toAmount} ${toToken.symbol}`,
+        });
+      }
     } catch {
       // Handled in hook
     }
@@ -122,7 +126,7 @@ export function SwapTransaction({ onBack }: SwapTransactionProps) {
           </div>
           <div className="flex justify-between py-2.5">
             <span className="text-zinc-500">Gas</span>
-            <span className="text-zinc-300">&lt; $0.001 (Sidra Chain)</span>
+            <span className="text-zinc-300">{"< $0.001 (Sidra Chain)"}</span>
           </div>
           <div className="flex justify-between py-2.5">
             <span className="text-zinc-500">Explorer</span>

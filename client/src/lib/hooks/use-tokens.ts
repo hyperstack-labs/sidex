@@ -1,8 +1,10 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useReadContract } from "wagmi";
+import { formatUnits } from "viem";
 import { useEnvMode } from "./use-env-mode";
+import { CONTRACT_ADDRESSES, ERC20_ABI } from "@/config/contracts";
 
 export interface TokenData {
   symbol: string;
@@ -21,6 +23,7 @@ const DEFAULT_DEMO_BALANCES: Record<string, number> = {
 };
 
 const DEMO_BALANCES_KEY = "sidex_demo_balances";
+const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 /**
  * Reads demo balances from localStorage or returns default initial state.
@@ -106,6 +109,30 @@ export function useTokens() {
     },
   });
 
+  // Real sGOLD ERC-20 balance (only queried once the token address is configured)
+  const sGoldConfigured = CONTRACT_ADDRESSES.sGold !== ZERO_ADDRESS;
+  const { data: sGoldBalance } = useReadContract({
+    address: CONTRACT_ADDRESSES.sGold,
+    abi: ERC20_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    query: {
+      enabled: !isMockMode && isConnected && !!address && sGoldConfigured,
+    },
+  });
+
+  // Real sUSD ERC-20 balance (only queried once the token address is configured)
+  const sUsdConfigured = CONTRACT_ADDRESSES.sUsd !== ZERO_ADDRESS;
+  const { data: sUsdBalance } = useReadContract({
+    address: CONTRACT_ADDRESSES.sUsd,
+    abi: ERC20_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    query: {
+      enabled: !isMockMode && isConnected && !!address && sUsdConfigured,
+    },
+  });
+
   if (isMockMode || !isConnected) {
     let demoObj = DEFAULT_DEMO_BALANCES;
     try {
@@ -160,7 +187,7 @@ export function useTokens() {
       symbol: "SDA",
       name: "Sidra Chain",
       balance: sdaBalance
-        ? Number(sdaBalance.formatted).toLocaleString(undefined, {
+        ? Number(formatUnits(sdaBalance.value, sdaBalance.decimals)).toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 4,
           })
@@ -172,7 +199,12 @@ export function useTokens() {
     {
       symbol: "sGOLD",
       name: "Sidra Gold",
-      balance: "0.00 g",
+      balance: sGoldConfigured
+        ? `${Number(formatUnits((sGoldBalance as bigint) ?? BigInt(0), 18)).toLocaleString(
+            undefined,
+            { minimumFractionDigits: 2, maximumFractionDigits: 4 }
+          )} g`
+        : "0.00 g",
       price: 84.2,
       image: "/sidex.png",
       decimals: 18,
@@ -180,7 +212,12 @@ export function useTokens() {
     {
       symbol: "sUSD",
       name: "Sidra USD",
-      balance: "0.00",
+      balance: sUsdConfigured
+        ? Number(formatUnits((sUsdBalance as bigint) ?? BigInt(0), 18)).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })
+        : "0.00",
       price: 1.0,
       image: "/icon.png",
       decimals: 18,

@@ -255,7 +255,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 className="w-80 sm:w-96 bg-zinc-950/95 border border-white/10 backdrop-blur-2xl p-0 rounded-2xl shadow-2xl overflow-hidden"
               >
                 {/* Header */}
-                <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/[0.02]">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/2">
                   <span className="text-xs font-semibold text-white">
                     System Status: Operational
                   </span>
@@ -264,7 +264,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
                 {/* Notifications Flat Editorial List (Zero Box-in-a-Box) */}
                 <div className="divide-y divide-white/5 text-xs max-h-80 overflow-y-auto">
-                  <div className="p-3.5 hover:bg-white/[0.02] transition-colors space-y-1">
+                  <div className="p-3.5 hover:bg-white/2 transition-colors space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-zinc-200">Compliance Verified</span>
                       <span className="text-[10px] text-zinc-500 font-mono">Just now</span>
@@ -275,7 +275,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     </p>
                   </div>
 
-                  <div className="p-3.5 hover:bg-white/[0.02] transition-colors space-y-1">
+                  <div className="p-3.5 hover:bg-white/2 transition-colors space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-zinc-200">Zakat Calculator Active</span>
                       <span className="text-[10px] text-zinc-500 font-mono">5m ago</span>
@@ -285,7 +285,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     </p>
                   </div>
 
-                  <div className="p-3.5 hover:bg-white/[0.02] transition-colors space-y-1">
+                  <div className="p-3.5 hover:bg-white/2 transition-colors space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-zinc-200">Market Intelligence Feed</span>
                       <span className="text-[10px] text-zinc-500 font-mono">12m ago</span>

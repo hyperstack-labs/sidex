@@ -365,7 +365,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
               key={token.symbol}
               whileHover={{ x: 4 }}
               transition={{ duration: 0.15 }}
-              className="flex items-center justify-between py-4 px-2 hover:bg-white/[0.02] rounded-xl transition-colors cursor-pointer"
+              className="flex items-center justify-between py-4 px-2 hover:bg-white/2 rounded-xl transition-colors cursor-pointer"
               onClick={() => onNavigate("swap")}
             >
               <div className="flex items-center gap-3.5">
@@ -426,7 +426,7 @@ export function Dashboard({ onNavigate }: DashboardProps) {
           {recentTransactions.map((tx, idx) => (
             <div
               key={idx}
-              className="flex items-center justify-between py-3.5 px-2 hover:bg-white/[0.02] rounded-xl transition-colors"
+              className="flex items-center justify-between py-3.5 px-2 hover:bg-white/2 rounded-xl transition-colors"
             >
               <div>
                 <p className="font-semibold text-white text-xs sm:text-sm">

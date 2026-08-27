@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import {
   Dialog,
@@ -14,6 +14,22 @@ import { Copy, Check, ExternalLink, ShieldCheck, LogOut, Wallet } from "lucide-r
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
+// Helper functions for useSyncExternalStore
+const subscribe = (callback: () => void) => {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+};
+
+const getSnapshot = () => {
+  try {
+    return localStorage.getItem("sidex_vault_address");
+  } catch {
+    return null;
+  }
+};
+
+const getServerSnapshot = () => null; // Always null on server to match initial client render
+
 /**
  * Custom RainbowKit Wallet Connect button with SidEx branded styling (#01AACA),
  * network status handling, responsive fullWidth support, and integrated
@@ -24,14 +40,9 @@ import { useRouter } from "next/navigation";
  * @returns Connect button interactive element.
  */
 export function WalletConnectButton({ fullWidth = false }: { fullWidth?: boolean }) {
-  const [vaultAddress, setVaultAddress] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-    try {
-      return localStorage.getItem("sidex_vault_address");
-    } catch {
-      return null;
-    }
-  });
+  // SSR-safe, warning-free localStorage subscription
+  const vaultAddress = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const router = useRouter();
@@ -52,8 +63,10 @@ export function WalletConnectButton({ fullWidth = false }: { fullWidth?: boolean
   const handleDisconnect = () => {
     try {
       localStorage.removeItem("sidex_vault_address");
+      // Trigger a custom storage event so useSyncExternalStore updates immediately in the current tab
+      window.dispatchEvent(new Event("storage"));
     } catch {}
-    setVaultAddress(null);
+
     setIsAccountOpen(false);
     toast.info("Vault locked. Redirecting to login...");
     router.push("/login");

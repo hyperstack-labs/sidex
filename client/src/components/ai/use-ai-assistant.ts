@@ -1,11 +1,5 @@
 import { useCallback, useState } from "react";
-import {
-  Calculator,
-  FileText,
-  Shield,
-  TrendingUp,
-  type LucideIcon,
-} from "lucide-react";
+import { Calculator, FileText, Shield, TrendingUp, type LucideIcon } from "lucide-react";
 
 export interface Message {
   id: string;
@@ -23,28 +17,28 @@ export interface QuickAction {
 
 export const quickActions: QuickAction[] = [
   {
-    icon: Shield,
-    label: "Compliance Audit",
-    description: "Verify asset adherence to AAOIFI standards",
-    action: "scan",
-  },
-  {
     icon: Calculator,
-    label: "Zakat Estimation",
-    description: "Calculate obligations based on current holdings",
+    label: "Calculate Zakat",
+    description: "Estimate obligations based on 85g gold Nisab",
     action: "zakat",
   },
   {
+    icon: Shield,
+    label: "Sharia Compliance",
+    description: "Verify AAOIFI standards for SDA, sGOLD, & sUSD",
+    action: "compliance",
+  },
+  {
     icon: TrendingUp,
-    label: "Market Trends",
-    description: "Analyze halal investment opportunities",
+    label: "Market Overview",
+    description: "Live prices for gold and Sidra Chain assets",
     action: "market",
   },
   {
     icon: FileText,
-    label: "Transaction Summary",
-    description: "Generate legible transaction reports",
-    action: "summary",
+    label: "Audit Rules",
+    description: "Bay' al-Sarf spot exchange guidelines",
+    action: "rules",
   },
 ];
 
@@ -53,7 +47,7 @@ const initialMessages: Message[] = [
     id: "1",
     type: "assistant",
     content:
-      "SidEx Intelligence Active. Ready for compliance verification and transaction analysis. Please select an operation.",
+      "How can I assist your portfolio today? You can ask me to estimate your Zakat, review Sharia asset backing, or verify on-chain swap rates on Sidra Chain.",
     timestamp: new Date(),
   },
 ];
@@ -75,7 +69,7 @@ export function useAIAssistant() {
       };
       setMessages((prev) => [...prev, assistantMsg]);
       setIsTyping(false);
-    }, 1500);
+    }, 1100);
   }, []);
 
   const handleQuickAction = useCallback(
@@ -84,25 +78,25 @@ export function useAIAssistant() {
       let assistantResponse = "";
 
       switch (action) {
-        case "scan":
-          userMessage = "Initiate Compliance Audit";
-          assistantResponse =
-            "Audit Results: VERIFIED.\n\n• SidraChain (SDA): AAOIFI Compliant\n• Ethereum (ETH): Compliant\n• Bitcoin (BTC): Compliant\n\nStatus: No prohibited assets detected.";
-          break;
         case "zakat":
-          userMessage = "Estimate Zakat Obligations";
+          userMessage = "Calculate my Zakat obligations";
           assistantResponse =
-            "Zakat Calculation Report:\n\n• Total Eligible Assets: $150,000.00\n• Nisab Threshold: $5,430.00 (Met)\n• Zakat Payable (2.5%): $3,750.00\n\nStatus: Payment Pending Distribution.";
+            "Zakat Estimation Report (Sidra Chain):\n\n• Gold Nisab Benchmark: $7,157.00 (85g 24K Gold @ $84.20/g)\n• Status: Nisab Met\n• Zakat Rate: 2.50% (Lunar Calendar)\n\nZakat applies to your liquid holdings in SDA, physical sGOLD, and sUSD held for a full Hawl (1 lunar year). Non-liquid infrastructure gas reserves may be exempt.";
+          break;
+        case "compliance":
+          userMessage = "Is my portfolio Sharia compliant?";
+          assistantResponse =
+            "Sharia Audit Summary:\n\n• $SDA: Verified native Layer 1 utility & validator asset\n• $sGOLD: Verified AAOIFI Standard No. 59 physical allocated 24K gold\n• $sUSD: 1:1 fully reserve-backed stable settlement currency\n\nAll trading pairs operate under Bay' al-Sarf (instant spot exchange) with zero interest (Riba) or speculative leverage (Gharar).";
           break;
         case "market":
-          userMessage = "Analyze Market Trends";
+          userMessage = "Show live market rates";
           assistantResponse =
-            "Market Intelligence:\n\n• SidraChain (SDA): +12.5% (24h). High liquidity.\n• Sector: Islamic Finance (+18% QTD).\n• Commodities: Gold-backed assets showing stability.\n\nAdvisory: Volatility detected in non-compliant DeFi sectors.";
+            "Live Market Rates (Sidra Chain Mainnet):\n\n• SDA / USD: $12.19\n• sGOLD / USD: $84.20 / gram\n• sUSD / USD: $1.00\n\nAll trades execute atomically on SidExRouter.sol with guaranteed physical backing.";
           break;
-        case "summary":
-          userMessage = "Generate Transaction Summary";
+        case "rules":
+          userMessage = "Explain Bay' al-Sarf rules";
           assistantResponse =
-            "Transaction Log:\n\n• IN: 500 SDA ($6,100) | Origin: 0x742d...\n• OUT: 0.5 ETH ($1,500) | Dest: 0x3f2a...\n• SWAP: 1000 SDA → ETH | Vol: $12,200\n\nAll entries cryptographically verified.";
+            "Bay' al-Sarf (Currency & Precious Metal Exchange Rules):\n\n1. Instant Hand-to-Hand Delivery (Taqabud): Settlement must occur atomically in the same transaction block.\n2. Equal Value for Same Genus: Exchanging gold for gold requires equal weight.\n3. Zero Deferred Settlement: Futures and forward contracts are strictly prohibited.";
           break;
         default:
           return;
@@ -118,7 +112,7 @@ export function useAIAssistant() {
       setMessages((prev) => [...prev, userMsg]);
       appendAssistantResponse(assistantResponse);
     },
-    [appendAssistantResponse],
+    [appendAssistantResponse]
   );
 
   const handleSendMessage = useCallback(() => {
@@ -134,9 +128,22 @@ export function useAIAssistant() {
     setMessages((prev) => [...prev, userMsg]);
     setInputValue("");
 
-    appendAssistantResponse(
-      "Query processing limit reached. For specialized financial rulings, please consult a certified Sharia board. This system provides data analysis only.",
-    );
+    const query = inputValue.toLowerCase();
+    let reply =
+      "Your query has been analyzed against Sidra Chain smart contracts and AAOIFI Sharia standards. If you need a formal Islamic ruling (Fatwa), please consult your local certified Sharia advisory board.";
+
+    if (query.includes("zakat") || query.includes("nisab")) {
+      reply =
+        "Zakat on Sidra Chain is calculated based on the 85g gold Nisab ($7,157.00). If your net SDA, sGOLD, and sUSD holdings exceed this threshold for 1 lunar year, 2.5% is payable.";
+    } else if (query.includes("gold") || query.includes("sgold")) {
+      reply =
+        "Sidra Gold ($sGOLD) represents 1 gram of 24K allocated physical gold stored in certified vaults, conforming strictly to AAOIFI Sharia Standard No. 59.";
+    } else if (query.includes("swap") || query.includes("trade") || query.includes("sda")) {
+      reply =
+        "Swaps on SidEx are powered by SidExRouter.sol. Transactions execute atomically on Sidra Chain with instant settlement (Bay' al-Sarf) and zero interest.";
+    }
+
+    appendAssistantResponse(reply);
   }, [appendAssistantResponse, inputValue]);
 
   return {

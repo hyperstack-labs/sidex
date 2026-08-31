@@ -67,14 +67,10 @@ contract SidExPair is SidExERC20 {
         require(ok && (data.length == 0 || abi.decode(data, (bool))), "SidEx: TRANSFER_FAILED");
     }
 
-    /// @dev Safe downcast: reverts explicitly if value exceeds uint112 max
-    ///      instead of silently truncating — no unsafe cast warning.
-    function _toUint112(uint256 value) private pure returns (uint112 result) {
+    /// @dev Safe downcast: reverts explicitly if value exceeds uint112 max.
+    function _toUint112(uint256 value) private pure returns (uint112) {
         require(value <= type(uint112).max, "SidEx: UINT112_OVERFLOW");
-        
-        assembly {
-            result := value
-        }
+        return uint112(value);
     }
 
     /// @dev Update reserves + TWAP price accumulators.
@@ -82,10 +78,13 @@ contract SidExPair is SidExERC20 {
     ///      never with time alone, so no interest accrues passively.
     function _update(uint256 balance0, uint256 balance1, uint112 _reserve0, uint112 _reserve1) private {
         uint32 blockTimestamp = uint32(block.timestamp % 2 ** 32);
-        uint32 timeElapsed = blockTimestamp - blockTimestampLast;
-        if (timeElapsed > 0 && _reserve0 != 0 && _reserve1 != 0) {
-            price0CumulativeLast += uint256(UQ112x112.encode(_reserve1).uqdiv(_reserve0)) * timeElapsed;
-            price1CumulativeLast += uint256(UQ112x112.encode(_reserve0).uqdiv(_reserve1)) * timeElapsed;
+        unchecked {
+            uint32 timeElapsed = blockTimestamp - blockTimestampLast;
+            if (timeElapsed > 0 && _reserve0 != 0 && _reserve1 != 0) {
+                // Modulo 2^32 subtraction and 256-bit TWAP overflow is intentional
+                price0CumulativeLast += uint256(UQ112x112.encode(_reserve1).uqdiv(_reserve0)) * timeElapsed;
+                price1CumulativeLast += uint256(UQ112x112.encode(_reserve0).uqdiv(_reserve1)) * timeElapsed;
+            }
         }
         reserve0 = _toUint112(balance0);
         reserve1 = _toUint112(balance1);

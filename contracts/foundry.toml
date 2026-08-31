@@ -6,4 +6,12 @@ solc_version = "0.8.36"
 evm_version = "paris"
 optimizer = true
 optimizer_runs = 200
+evm_version = "paris"
 remappings = ["forge-std/=lib/forge-std/src/", "@openzeppelin/=lib/openzeppelin-contracts/"]
+fs_permissions = [{ access = "write", path = "out/" }]
+
+[rpc_endpoints]
+sidrachain = "https://node.sidrachain.com"
+
+[etherscan]
+sidrachain = { key = "nokey", url = "https://ledger.sidrachain.com/api" }

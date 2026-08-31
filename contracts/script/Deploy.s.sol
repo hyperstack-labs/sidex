@@ -19,5 +19,13 @@ contract Deploy is Script {
 
         console.log("SidExFactory deployed at:", address(factory));
         console.log("SidExRouter  deployed at:", address(router));
+
+        string memory json = string(abi.encodePacked(
+            '{"factory":"', vm.toString(address(factory)),
+            '","router":"',  vm.toString(address(router)),
+            '","chainId":',  vm.toString(block.chainid),
+            '}'
+        ));
+        vm.writeFile("out/deployed-addresses.json", json);
     }
 }

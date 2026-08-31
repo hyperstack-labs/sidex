@@ -5,12 +5,16 @@ import {ISidExFactory} from "./interfaces/ISidExFactory.sol";
 import {ISidExPair} from "./interfaces/ISidExPair.sol";
 import {IERC20} from "./interfaces/IERC20.sol";
 import {SidExLibrary} from "./libraries/SidExLibrary.sol";
+import {RibaGuard} from "./RibaGuard.sol";
 
 /// @title SidExRouter
 /// @notice Stateless swap/liquidity router. No margin, no borrowing, no
 ///         interest-bearing positions — every call settles atomically at the
 ///         spot price implied by pool reserves (bay' al-sarf style exchange).
-contract SidExRouter {
+///
+///         Inherits RibaGuard to enforce AAOIFI Sharia compliance guardrails
+///         on every liquidity action.
+contract SidExRouter is RibaGuard {
     address public immutable factory;
 
     modifier ensure(uint256 deadline) {
@@ -22,10 +26,11 @@ contract SidExRouter {
         factory = _factory;
     }
 
-    // ---------------------------------------------------------------------
-    // Liquidity
-    // ---------------------------------------------------------------------
-
+    /// @notice Add liquidity to a token pair pool.
+    /// @dev    Riba guardrails applied:
+    ///         - noFarDeadline:        deadline must be within 2 hours
+    ///         - noLeveragedPosition:  caller must not have open debt position
+    ///         - noOneSidedDeposit:    both desired amounts must be non-zero
     function addLiquidity(
         address tokenA,
         address tokenB,
@@ -35,14 +40,28 @@ contract SidExRouter {
         uint256 amountBMin,
         address to,
         uint256 deadline
-    ) external ensure(deadline) returns (uint256 amountA, uint256 amountB, uint256 liquidity) {
+    )
+        external
+        ensure(deadline)
+        noFarDeadline(deadline)
+        noLeveragedPosition(msg.sender)
+        noOneSidedDeposit(amountADesired, amountBDesired)
+        returns (uint256 amountA, uint256 amountB, uint256 liquidity)
+    {
         (amountA, amountB) = _addLiquidity(tokenA, tokenB, amountADesired, amountBDesired, amountAMin, amountBMin);
         address pair = SidExLibrary.pairFor(factory, tokenA, tokenB);
         _safeTransferFrom(tokenA, msg.sender, pair, amountA);
         _safeTransferFrom(tokenB, msg.sender, pair, amountB);
         liquidity = ISidExPair(pair).mint(to);
+
+        // Record deposit for compliance audit trail
+        _recordDeposit(msg.sender);
     }
 
+    /// @notice Remove liquidity from a token pair pool.
+    /// @dev    Riba guardrails applied:
+    ///         - noFarDeadline:   deadline must be within 2 hours
+    ///         - noFlashBurn:     cannot burn in consecutive blocks
     function removeLiquidity(
         address tokenA,
         address tokenB,
@@ -51,14 +70,23 @@ contract SidExRouter {
         uint256 amountBMin,
         address to,
         uint256 deadline
-    ) public ensure(deadline) returns (uint256 amountA, uint256 amountB) {
+    )
+        public
+        ensure(deadline)
+        noFarDeadline(deadline)
+        noFlashBurn(msg.sender)
+        returns (uint256 amountA, uint256 amountB)
+    {
         address pair = SidExLibrary.pairFor(factory, tokenA, tokenB);
-        _safeTransferFrom(pair, msg.sender, pair, liquidity); // LP token transferFrom (pair IS the ERC20)
+        _safeTransferFrom(pair, msg.sender, pair, liquidity);
         (uint256 amount0, uint256 amount1) = ISidExPair(pair).burn(to);
         (address token0,) = SidExLibrary.sortTokens(tokenA, tokenB);
         (amountA, amountB) = tokenA == token0 ? (amount0, amount1) : (amount1, amount0);
         require(amountA >= amountAMin, "SidEx: INSUFFICIENT_A_AMOUNT");
         require(amountB >= amountBMin, "SidEx: INSUFFICIENT_B_AMOUNT");
+
+        // Record burn for flash-burn prevention on next call
+        _recordBurn(msg.sender);
     }
 
     function _addLiquidity(
@@ -89,9 +117,7 @@ contract SidExRouter {
         }
     }
 
-    // ---------------------------------------------------------------------
-    // Swaps — constant product, no interest accrual, settle atomically
-    // ---------------------------------------------------------------------
+    // ── Swaps ─────────────────────────────────────────────────────────────────
 
     function swapExactTokensForTokens(
         uint256 amountIn,
@@ -99,7 +125,7 @@ contract SidExRouter {
         address[] calldata path,
         address to,
         uint256 deadline
-    ) external ensure(deadline) returns (uint256[] memory amounts) {
+    ) external ensure(deadline) noFarDeadline(deadline) returns (uint256[] memory amounts) {
         amounts = SidExLibrary.getAmountsOut(factory, amountIn, path);
         require(amounts[amounts.length - 1] >= amountOutMin, "SidEx: INSUFFICIENT_OUTPUT_AMOUNT");
         _safeTransferFrom(path[0], msg.sender, SidExLibrary.pairFor(factory, path[0], path[1]), amounts[0]);
@@ -112,7 +138,7 @@ contract SidExRouter {
         address[] calldata path,
         address to,
         uint256 deadline
-    ) external ensure(deadline) returns (uint256[] memory amounts) {
+    ) external ensure(deadline) noFarDeadline(deadline) returns (uint256[] memory amounts) {
         amounts = SidExLibrary.getAmountsIn(factory, amountOut, path);
         require(amounts[0] <= amountInMax, "SidEx: EXCESSIVE_INPUT_AMOUNT");
         _safeTransferFrom(path[0], msg.sender, SidExLibrary.pairFor(factory, path[0], path[1]), amounts[0]);
@@ -131,9 +157,7 @@ contract SidExRouter {
         }
     }
 
-    // ---------------------------------------------------------------------
-    // View helpers (pass-through to library, convenient for frontends/tests)
-    // ---------------------------------------------------------------------
+    // ── View helpers ──────────────────────────────────────────────────────────
 
     function quote(uint256 amountA, uint256 reserveA, uint256 reserveB) external pure returns (uint256 amountB) {
         return SidExLibrary.quote(amountA, reserveA, reserveB);
@@ -154,6 +178,8 @@ contract SidExRouter {
     function getAmountsIn(uint256 amountOut, address[] calldata path) external view returns (uint256[] memory) {
         return SidExLibrary.getAmountsIn(factory, amountOut, path);
     }
+
+    // ── Internal ──────────────────────────────────────────────────────────────
 
     function _safeTransferFrom(address token, address from, address to, uint256 value) internal {
         (bool ok, bytes memory data) =

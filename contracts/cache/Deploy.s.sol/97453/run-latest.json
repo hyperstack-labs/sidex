@@ -1,0 +1,10 @@
+{
+  "transactions": [
+    {
+      "rpc": "https://node.sidrachain.com"
+    },
+    {
+      "rpc": "https://node.sidrachain.com"
+    }
+  ]
+}
